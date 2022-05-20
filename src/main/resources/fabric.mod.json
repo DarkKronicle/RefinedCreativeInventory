@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "refinedcreativeinventory",
+  "version": "${version}",
+  "name": "RefinedCreativeInventory",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/RefinedCreativeInventory/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "io.github.darkkronicle.refinedcreativeinventory.RefinedCreativeInventory"
+    ]
+  },
+  "mixins": [
+    "RefinedCreativeInventory.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.4",
+    "fabric": "*",
+    "minecraft": "1.18.2"
+  }
+}
