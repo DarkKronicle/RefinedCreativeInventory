@@ -1,7 +1,6 @@
 package io.github.darkkronicle.refinedcreativeinventory.gui;
 
 import io.github.darkkronicle.darkkore.gui.ComponentScreen;
-import io.github.darkkronicle.darkkore.gui.components.*;
 import io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.TextBoxComponent;
@@ -60,11 +59,10 @@ public class InventoryScreen extends ComponentScreen {
         items.setBottomPad(10);
         items.setTopPad(10);
         setItems(ItemHolder.getInstance().getAllItems());
-
-
         addComponent(new PositionedComponent(
                 new ScrollComponent(items, screen.getWidth() - 50, screen.getHeight() - 100, true
         ), 40, 40, screen.getWidth() - 50, screen.getHeight() - 100).setOutlineColor(new Color(0, 0, 0, 255)));
+
         ListComponent hotbar = new ListComponent(-1, -1, false);
         for (int i = 0; i < 9; i++) {
             final int j = i;

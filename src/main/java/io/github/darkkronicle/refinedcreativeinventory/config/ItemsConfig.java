@@ -46,7 +46,7 @@ public class ItemsConfig extends ModConfig {
                 Config stack = nest.createSubConfig();
                 ItemSerializer.serialize(stack, item.getStack());
                 nest.set("stack", stack);
-                nest.set("tags", item.getTags());
+                nest.set("flags", ((TagInventoryItem) item).getClientTags());
                 confs.add(nest);
             }
         }
@@ -81,8 +81,8 @@ public class ItemsConfig extends ModConfig {
         }
         for (Config c : confs) {
             ItemStack stack = ItemSerializer.deserialize(c.get("stack"));
-            List<String> tags = c.get("tags");
-            items.add(new TagInventoryItem(stack, tags));
+            List<String> flags = c.get("flags");
+            items.add(new TagInventoryItem(stack, flags));
         }
         config.close();
         if (items.size() > 0) {
