@@ -31,4 +31,20 @@ public class ItemSerializer {
         config.set("nbt", compound.toString());
     }
 
+    public boolean areEqual(ItemStack one, ItemStack two) {
+        if (!one.isItemEqual(two)) {
+            return false;
+        }
+        if (one.getCount() != two.getCount()) {
+            return false;
+        }
+        if (one.hasNbt() != two.hasNbt()) {
+            return false;
+        }
+        if (!one.hasNbt() && !two.hasNbt()) {
+            return true;
+        }
+        return one.getNbt().equals(two.getNbt());
+    }
+
 }

@@ -4,13 +4,11 @@ import io.github.darkkronicle.darkkore.config.ConfigurationManager;
 import io.github.darkkronicle.darkkore.intialization.InitializationHandler;
 import io.github.darkkronicle.refinedcreativeinventory.config.ItemsConfig;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
-import io.github.darkkronicle.refinedcreativeinventory.items.GroupHolder;
 import io.github.darkkronicle.refinedcreativeinventory.items.TagHolder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -41,6 +39,5 @@ public class RefinedCreativeInventory implements ClientModInitializer {
 
     public static void refresh() {
         TagHolder.getInstance().populateTags();
-        GroupHolder.getInstance().populateGroups();
     }
 }

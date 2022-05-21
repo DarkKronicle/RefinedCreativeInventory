@@ -17,8 +17,16 @@ public interface InventoryItem extends Comparable<InventoryItem> {
 
     List<ItemGroup> getGroups();
 
+    boolean isCustom();
+
+    void setCustom(boolean custom);
+
+    void addGroup(ItemGroup group);
+
     @Override
     default int compareTo(@NotNull InventoryItem o) {
         return getStack().getName().getString().compareTo(o.getStack().getName().getString());
     }
+
+    void addFlag(String flags);
 }

@@ -8,7 +8,7 @@ import io.github.darkkronicle.darkkore.config.ModConfig;
 import io.github.darkkronicle.darkkore.config.options.Option;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
-import io.github.darkkronicle.refinedcreativeinventory.items.TagInventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
 import net.minecraft.item.ItemStack;
 
@@ -41,10 +41,14 @@ public class ItemsConfig extends ModConfig {
         config.load();
         List<Config> confs = new ArrayList<>();
         for (InventoryItem item : ItemHolder.getInstance().getAllItems()) {
-            if (item instanceof TagInventoryItem) {
+            if (item instanceof BasicInventoryItem) {
+                if (!item.isCustom() && item.getFlags().isEmpty()) {
+                    continue;
+                }
                 Config nest = config.createSubConfig();
                 ItemSerializer.serialize(nest, item.getStack());
-                nest.set("flags", ((TagInventoryItem) item).getClientTags());
+                nest.set("flags", item.getFlags());
+                nest.set("custom", item.isCustom());
                 confs.add(nest);
             }
         }
@@ -69,25 +73,23 @@ public class ItemsConfig extends ModConfig {
 
     @Override
     public void rawLoad() {
+        ItemHolder.getInstance().setDefaults();
         config.load();
-        List<InventoryItem> items = new ArrayList<>();
         List<Config> confs = config.getOrElse("items", () -> null);
         if (confs == null) {
             config.close();
-            ItemHolder.getInstance().setDefaults();
             return;
         }
         for (Config c : confs) {
             ItemStack stack = ItemSerializer.deserialize(c);
             List<String> flags = c.get("flags");
-            items.add(new TagInventoryItem(stack, flags));
+            InventoryItem item = ItemHolder.getInstance().getOrCreate(stack);
+            for (String flag : flags) {
+                item.addFlag(flag);
+            }
+            item.setCustom(c.get("custom"));
         }
         config.close();
-        if (items.size() > 0) {
-            ItemHolder.getInstance().setItems(items);
-        } else {
-            ItemHolder.getInstance().setDefaults();
-        }
     }
 
     @Override

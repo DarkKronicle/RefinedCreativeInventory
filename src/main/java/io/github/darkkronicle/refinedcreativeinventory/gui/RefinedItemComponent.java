@@ -4,13 +4,10 @@ import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.TextComponent;
 import io.github.darkkronicle.darkkore.util.*;
 import io.github.darkkronicle.darkkore.util.text.RawText;
-import io.github.darkkronicle.refinedcreativeinventory.items.GroupHolder;
-import io.github.darkkronicle.refinedcreativeinventory.items.TagHolder;
+import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -22,14 +19,14 @@ public class RefinedItemComponent extends ItemComponent {
 
     private final TextComponent hoverComponent;
 
-    public RefinedItemComponent(Item item) {
-        this(new ItemStack(item));
-    }
+    private final InventoryItem item;
 
-    public RefinedItemComponent(ItemStack stack) {
-        super(stack);
+    public RefinedItemComponent(InventoryItem item) {
+        super(item.getStack());
+        this.item = item;
+
         FluidText text = null;
-        for (Text line : stack.getTooltip(null, TooltipContext.Default.ADVANCED)) {
+        for (Text line : item.getStack().getTooltip(null, TooltipContext.Default.ADVANCED)) {
             if (text == null) {
                 text = new FluidText(line);
             } else {
@@ -37,9 +34,9 @@ public class RefinedItemComponent extends ItemComponent {
             }
         }
         if (text == null) {
-            text = new FluidText(stack.getName());
+            text = new FluidText(item.getStack().getName());
         }
-        List<ItemGroup> groups = GroupHolder.getInstance().getGroups(stack.getItem());
+        List<ItemGroup> groups = item.getGroups();
         if (!groups.isEmpty()) {
             if (groups.size() == 1) {
                 text.append("\n").append(new RawText("Group: " + groups.get(0).getName(), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
@@ -47,7 +44,7 @@ public class RefinedItemComponent extends ItemComponent {
                 text.append("\n").append(new RawText("Groups: " + String.join(", ", groups.stream().map(ItemGroup::getName).toList()), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
             }
         }
-        List<Identifier> tags = TagHolder.getInstance().getTags(stack.getItem());
+        List<Identifier> tags = item.getTags();
         if (!tags.isEmpty()) {
             if (tags.size() == 1) {
                 text.append("\n").append(new RawText("Tag: " + tags.get(0).getPath(), Style.EMPTY.withColor(Formatting.DARK_GRAY)));

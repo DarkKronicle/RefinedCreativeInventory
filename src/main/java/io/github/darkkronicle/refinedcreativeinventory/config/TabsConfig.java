@@ -8,7 +8,7 @@ import io.github.darkkronicle.darkkore.config.ModConfig;
 import io.github.darkkronicle.darkkore.config.options.Option;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
-import io.github.darkkronicle.refinedcreativeinventory.items.TagInventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
 import net.minecraft.item.ItemStack;
 
@@ -41,7 +41,7 @@ public class TabsConfig extends ModConfig {
         config.load();
         List<Config> confs = new ArrayList<>();
         for (InventoryItem item : ItemHolder.getInstance().getAllItems()) {
-            if (item instanceof TagInventoryItem) {
+            if (item instanceof BasicInventoryItem) {
                 Config nest = config.createSubConfig();
                 Config stack = nest.createSubConfig();
                 ItemSerializer.serialize(stack, item.getStack());
@@ -82,7 +82,7 @@ public class TabsConfig extends ModConfig {
         for (Config c : confs) {
             ItemStack stack = ItemSerializer.deserialize(c.get("stack"));
             List<String> tags = c.get("tags");
-            items.add(new TagInventoryItem(stack, tags));
+            items.add(new BasicInventoryItem(stack, tags));
         }
         config.close();
         if (items.size() > 0) {

@@ -91,7 +91,7 @@ public class InventoryScreen extends ComponentScreen {
     }
 
     public RefinedItemComponent createItemComponent(InventoryItem item) {
-        RefinedItemComponent component = new RefinedItemComponent(item.getStack()) {
+        RefinedItemComponent component = new RefinedItemComponent(item) {
             @Override
             public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
                 selectedStack = this.getStack();

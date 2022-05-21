@@ -1,8 +1,10 @@
 package io.github.darkkronicle.refinedcreativeinventory.items;
 
 import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
+import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
 import lombok.Getter;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
@@ -25,25 +27,33 @@ public class ItemHolder {
     @Getter private List<ItemTab> tabs = new ArrayList<>();
 
     public void setDefaults() {
-        allItems = new ArrayList<>();
-        tabs = new ArrayList<>();
         for (Item item : Registry.ITEM) {
-            List<String> tags = new ArrayList<>();
-            DefaultedList<ItemStack> stackList = DefaultedList.of();
             if (item.getGroup() != null) {
+                DefaultedList<ItemStack> stackList = DefaultedList.of();
                 item.appendStacks(item.getGroup(), stackList);
-
                 for (ItemStack stack : stackList){
-                    allItems.add(new TagInventoryItem(stack, tags));
+                    getOrCreate(stack);
                 }
             } else {
-                allItems.add(new TagInventoryItem(new ItemStack(item), tags));
-
-                item.getDefaultStack();
+                getOrCreate(new ItemStack(item));
             }
 
         }
+        populateGroups();
         Collections.sort(allItems);
+    }
+
+    public void populateGroups() {
+        for (ItemGroup group : ItemGroup.GROUPS) {
+            DefaultedList<ItemStack> items = DefaultedList.of();
+            if (group.equals(ItemGroup.HOTBAR) || group.equals(ItemGroup.SEARCH)) {
+                continue;
+            }
+            group.appendStacks(items);
+            for (ItemStack item : items) {
+                ItemHolder.getInstance().addGroup(item, group);
+            }
+        }
     }
 
     public List<InventoryItem> search(String query) {
@@ -57,8 +67,22 @@ public class ItemHolder {
         return search.search(allItems);
     }
 
+
+    public InventoryItem getOrCreate(ItemStack stack) {
+        return allItems.stream().filter(item -> ItemSerializer.areEqual(item.getStack(), stack)).findFirst().orElseGet(() -> {
+            BasicInventoryItem item = new BasicInventoryItem(stack);
+            allItems.add(item);
+            return item;
+        });
+    }
+
     public void setItems(List<InventoryItem> items) {
         Collections.sort(items);
         this.allItems = items;
     }
+
+    public void addGroup(ItemStack item, ItemGroup group) {
+        getOrCreate(item).addGroup(group);
+    }
+
 }
