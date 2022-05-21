@@ -1,9 +1,14 @@
 package io.github.darkkronicle.refinedcreativeinventory.util;
 
 import com.electronwill.nightconfig.core.Config;
+import com.mojang.brigadier.StringReader;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lombok.experimental.UtilityClass;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.StringNbtReader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -11,14 +16,19 @@ import net.minecraft.util.registry.Registry;
 public class ItemSerializer {
 
     public ItemStack deserialize(Config config) {
-        Identifier identifier = new Identifier(config.get("name"));
-        Item item = Registry.ITEM.get(identifier);
-        return new ItemStack(item);
+        String nbt = config.get("nbt");
+        StringNbtReader reader = new StringNbtReader(new StringReader(nbt));
+        try {
+            return ItemStack.fromNbt(reader.parseCompound());
+        } catch (CommandSyntaxException e) {
+            return new ItemStack(Items.STONE);
+        }
     }
 
     public void serialize(Config config, ItemStack stack) {
-        Identifier identifier = Registry.ITEM.getId(stack.getItem());
-        config.set("name", identifier.toString());
+        NbtCompound compound = new NbtCompound();
+        stack.writeNbt(compound);
+        config.set("nbt", compound.toString());
     }
 
 }

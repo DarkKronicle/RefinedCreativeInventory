@@ -99,19 +99,19 @@ public class ItemSearch {
         for (int i = 0; i < result.size(); i++) {
             StringMatch match = result.getMatches().get(i);
             if (i == 0 && match.start != 0) {
-                options.put(SearchFilter.NAME, query.substring(0, match.start));
+                options.put(SearchFilter.NAME, query.substring(0, match.start).strip());
             }
             if (i == result.size() - 1) {
                 SearchFilter filter = SearchFilter.TAG.fromString(match.match.substring(0, match.match.length() - 1));
                 if (filter != null) {
-                    options.put(filter, query.substring(match.end));
+                    options.put(filter, query.substring(match.end).strip());
                 }
                 break;
             }
             StringMatch next = result.getMatches().get(i + 1);
             SearchFilter filter = SearchFilter.TAG.fromString(match.match.substring(0, match.match.length() - 1));
             if (filter != null) {
-                options.put(filter, query.substring(match.end, next.start));
+                options.put(filter, query.substring(match.end, next.start).strip());
             }
         }
         return new ItemSearch(options);

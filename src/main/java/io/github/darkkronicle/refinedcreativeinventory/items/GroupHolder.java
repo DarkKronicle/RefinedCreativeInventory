@@ -7,9 +7,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GroupHolder {
 
@@ -27,13 +25,21 @@ public class GroupHolder {
         groups.clear();
         for (ItemGroup group : ItemGroup.GROUPS) {
             DefaultedList<ItemStack> items = DefaultedList.of();
+            if (group.equals(ItemGroup.HOTBAR)) {
+                continue;
+            }
+            if (group.equals(ItemGroup.SEARCH)) {
+                continue;
+            }
             group.appendStacks(items);
             for (ItemStack item : items) {
                 groups.compute(Registry.ITEM.getId(item.getItem()), (k, v) -> {
                     if (v == null) {
-                        return List.of(group);
+                        return new ArrayList<>(List.of(group));
                     } else {
-                        v.add(group);
+                        if (!v.contains(group)) {
+                            v.add(group);
+                        }
                         return v;
                     }
                 });
@@ -42,7 +48,7 @@ public class GroupHolder {
     }
 
     public List<ItemGroup> getGroups(Item item) {
-        return groups.getOrDefault(Registry.ITEM.getId(item), null);
+        return Optional.ofNullable(groups.get(Registry.ITEM.getId(item))).orElseGet(ArrayList::new);
     }
 
 }

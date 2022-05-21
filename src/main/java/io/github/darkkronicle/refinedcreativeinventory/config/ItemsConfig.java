@@ -43,9 +43,7 @@ public class ItemsConfig extends ModConfig {
         for (InventoryItem item : ItemHolder.getInstance().getAllItems()) {
             if (item instanceof TagInventoryItem) {
                 Config nest = config.createSubConfig();
-                Config stack = nest.createSubConfig();
-                ItemSerializer.serialize(stack, item.getStack());
-                nest.set("stack", stack);
+                ItemSerializer.serialize(nest, item.getStack());
                 nest.set("flags", ((TagInventoryItem) item).getClientTags());
                 confs.add(nest);
             }
@@ -80,7 +78,7 @@ public class ItemsConfig extends ModConfig {
             return;
         }
         for (Config c : confs) {
-            ItemStack stack = ItemSerializer.deserialize(c.get("stack"));
+            ItemStack stack = ItemSerializer.deserialize(c);
             List<String> flags = c.get("flags");
             items.add(new TagInventoryItem(stack, flags));
         }

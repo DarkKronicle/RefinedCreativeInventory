@@ -8,9 +8,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryEntryList;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class TagHolder {
 
@@ -30,11 +28,14 @@ public class TagHolder {
             TagKey<Item> tagKey = pair.getFirst();
             RegistryEntryList.Named<Item> list = pair.getSecond();
             for (RegistryEntry<Item> item : list) {
-                tags.compute(Registry.ITEM.getId(item.value()), (k, v) -> {
+                Identifier id = Registry.ITEM.getId(item.value());
+                tags.compute(id, (k, v) -> {
                     if (v == null) {
-                        return List.of(tagKey.id());
+                        return new ArrayList<>(List.of(tagKey.id()));
                     } else {
-                        v.add(tagKey.id());
+                        if (!v.contains(tagKey.id())) {
+                            v.add(tagKey.id());
+                        }
                         return v;
                     }
                 });
@@ -43,7 +44,7 @@ public class TagHolder {
     }
 
     public List<Identifier> getTags(Item item) {
-        return tags.getOrDefault(Registry.ITEM.getId(item), null);
+        return Optional.ofNullable(tags.get(Registry.ITEM.getId(item))).orElseGet(ArrayList::new);
     }
 
 }
