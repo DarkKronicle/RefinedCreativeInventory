@@ -25,6 +25,7 @@ public class TagHolder {
     private TagHolder() {}
 
     public void populateTags() {
+        tags.clear();
         for (Pair<TagKey<Item>, RegistryEntryList.Named<Item>> pair : Registry.ITEM.streamTagsAndEntries().toList()) {
             TagKey<Item> tagKey = pair.getFirst();
             RegistryEntryList.Named<Item> list = pair.getSecond();

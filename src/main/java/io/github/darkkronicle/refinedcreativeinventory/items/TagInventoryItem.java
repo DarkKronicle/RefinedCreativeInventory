@@ -1,15 +1,9 @@
 package io.github.darkkronicle.refinedcreativeinventory.items;
 
-import com.mojang.datafixers.types.templates.Named;
-import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.tag.TagKey;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryEntryList;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +23,25 @@ public class TagInventoryItem implements InventoryItem {
     }
 
     @Override
-    public List<String> getTags() {
-
+    public List<String> getFlags() {
         return clientTags;
+    }
+
+    @Override
+    public List<Identifier> getTags() {
+        List<Identifier> tags = TagHolder.getInstance().getTags(stack.getItem());
+        if (tags == null) {
+            return new ArrayList<>();
+        }
+        return tags;
+    }
+
+    @Override
+    public List<ItemGroup> getGroups() {
+        List<ItemGroup> groups = GroupHolder.getInstance().getGroups(getStack().getItem());
+        if (groups == null) {
+            return new ArrayList<>();
+        }
+        return groups;
     }
 }

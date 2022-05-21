@@ -7,7 +7,7 @@
   "authors": [],
   "contact": {},
   "license": "MIT",
-  "icon": "assets/RefinedCreativeInventory/icon.png",
+  "icon": "assets/refinedcreativeinventory/icon.png",
   "environment": "*",
   "entrypoints": {
     "client": [
@@ -15,7 +15,7 @@
     ]
   },
   "mixins": [
-    "RefinedCreativeInventory.mixins.json"
+    "refinedcreativeinventory.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.14.4",

@@ -46,7 +46,7 @@ public class TabsConfig extends ModConfig {
                 Config stack = nest.createSubConfig();
                 ItemSerializer.serialize(stack, item.getStack());
                 nest.set("stack", stack);
-                nest.set("tags", item.getTags());
+                nest.set("tags", item.getFlags());
                 confs.add(nest);
             }
         }

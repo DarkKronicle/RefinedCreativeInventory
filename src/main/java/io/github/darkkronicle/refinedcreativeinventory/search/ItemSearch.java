@@ -18,7 +18,9 @@ public class ItemSearch {
     @AllArgsConstructor
     public enum SearchFilter implements OptionListEntry<SearchFilter> {
         NAME("name"),
-        TAG("tag")
+        TAG("tag"),
+        FLAG("flag"),
+        GROUP("group"),
         ;
         public final String key;
 
@@ -66,10 +68,22 @@ public class ItemSearch {
                 return false;
             }).toList();
         }
+        if (parameters.containsKey(SearchFilter.FLAG)) {
+            String query = parameters.get(SearchFilter.FLAG);
+            items = items.stream().filter(item -> {
+                return item.getFlags().stream().anyMatch(tag -> tag.contains(query));
+            }).toList();
+        }
         if (parameters.containsKey(SearchFilter.TAG)) {
             String query = parameters.get(SearchFilter.TAG);
             items = items.stream().filter(item -> {
-                return item.getTags().stream().anyMatch(tag -> tag.contains(query));
+                return item.getTags().stream().anyMatch(tag -> tag.toString().contains(query));
+            }).toList();
+        }
+        if (parameters.containsKey(SearchFilter.GROUP)) {
+            String query = parameters.get(SearchFilter.GROUP);
+            items = items.stream().filter(item -> {
+                return item.getGroups().stream().anyMatch(tag -> tag.getName().toLowerCase(Locale.ROOT).contains(query));
             }).toList();
         }
         return items;

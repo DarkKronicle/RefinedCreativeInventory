@@ -4,6 +4,7 @@ import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
 import lombok.Getter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
@@ -28,12 +29,19 @@ public class ItemHolder {
         tabs = new ArrayList<>();
         for (Item item : Registry.ITEM) {
             List<String> tags = new ArrayList<>();
+            DefaultedList<ItemStack> stackList = DefaultedList.of();
             if (item.getGroup() != null) {
-                tags.add(item.getGroup().getName());
+                item.appendStacks(item.getGroup(), stackList);
+
+                for (ItemStack stack : stackList){
+                    allItems.add(new TagInventoryItem(stack, tags));
+                }
             } else {
-                tags.add("no_group");
+                allItems.add(new TagInventoryItem(new ItemStack(item), tags));
+
+                item.getDefaultStack();
             }
-            allItems.add(new TagInventoryItem(new ItemStack(item), tags));
+
         }
         Collections.sort(allItems);
     }
