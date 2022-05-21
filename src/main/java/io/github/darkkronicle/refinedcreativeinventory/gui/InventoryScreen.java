@@ -23,7 +23,10 @@ public class InventoryScreen extends ComponentScreen {
     private ItemStack selectedStack = null;
     private ListComponent items;
 
+    private static String lastSearch = "";
+
     protected void onChange(String string) {
+        lastSearch = string;
         setItems(string);
     }
 
@@ -45,7 +48,7 @@ public class InventoryScreen extends ComponentScreen {
     @Override
     public void initImpl() {
         Dimensions screen = Dimensions.getScreen();
-        TextBoxComponent searchBox = new TextBoxComponent("", screen.getWidth() - 50, 14, this::onChange);
+        TextBoxComponent searchBox = new TextBoxComponent(lastSearch, screen.getWidth() - 50, 14, this::onChange);
         searchBox.setBackgroundColor(new Color(0, 0, 0, 255));
         addComponent(new PositionedComponent(
                 searchBox,
@@ -58,7 +61,7 @@ public class InventoryScreen extends ComponentScreen {
         items = new ListComponent(screen.getWidth() - 50, -1, false);
         items.setBottomPad(10);
         items.setTopPad(10);
-        setItems(ItemHolder.getInstance().getAllItems());
+        setItems(lastSearch);
         addComponent(new PositionedComponent(
                 new ScrollComponent(items, screen.getWidth() - 50, screen.getHeight() - 100, true
         ), 40, 40, screen.getWidth() - 50, screen.getHeight() - 100).setOutlineColor(new Color(0, 0, 0, 255)));

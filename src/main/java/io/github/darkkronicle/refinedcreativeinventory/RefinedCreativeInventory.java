@@ -37,13 +37,10 @@ public class RefinedCreativeInventory implements ClientModInitializer {
                         MinecraftClient.getInstance().setScreen(new InventoryScreen());
                     }
                 });
-        initializeClientEvents();
     }
 
-    public void initializeClientEvents() {
-        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
-            TagHolder.getInstance().populateTags();
-            GroupHolder.getInstance().populateGroups();
-        });
+    public static void refresh() {
+        TagHolder.getInstance().populateTags();
+        GroupHolder.getInstance().populateGroups();
     }
 }

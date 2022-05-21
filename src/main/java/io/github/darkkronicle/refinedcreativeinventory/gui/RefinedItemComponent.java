@@ -2,9 +2,7 @@ package io.github.darkkronicle.refinedcreativeinventory.gui;
 
 import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.TextComponent;
-import io.github.darkkronicle.darkkore.util.Color;
-import io.github.darkkronicle.darkkore.util.FluidText;
-import io.github.darkkronicle.darkkore.util.PositionedRectangle;
+import io.github.darkkronicle.darkkore.util.*;
 import io.github.darkkronicle.darkkore.util.text.RawText;
 import io.github.darkkronicle.refinedcreativeinventory.items.GroupHolder;
 import io.github.darkkronicle.refinedcreativeinventory.items.TagHolder;
@@ -71,7 +69,16 @@ public class RefinedItemComponent extends ItemComponent {
     @Override
     public void postRender(MatrixStack matrices, PositionedRectangle renderBounds, int x, int y, int mouseX, int mouseY) {
         if (this.isHovered()) {
-            hoverComponent.render(matrices, renderBounds, x, y + 18, mouseX, mouseY);
+            y = y + 18;
+            Dimensions screen = Dimensions.getScreen();
+            Rectangle bounds = hoverComponent.getBoundingBox();
+            if (y + bounds.height() > screen.getHeight()) {
+                y = screen.getHeight() - bounds.height();
+            }
+            if (x + bounds.width() > screen.getWidth()) {
+                x = screen.getWidth() - bounds.width();
+            }
+            hoverComponent.render(matrices, renderBounds, x, y, mouseX, mouseY);
         }
     }
 }
