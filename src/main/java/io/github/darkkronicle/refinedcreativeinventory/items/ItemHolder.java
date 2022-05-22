@@ -1,6 +1,6 @@
 package io.github.darkkronicle.refinedcreativeinventory.items;
 
-import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
 import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
 import lombok.Getter;
 import net.minecraft.item.Item;
@@ -12,7 +12,6 @@ import net.minecraft.util.registry.Registry;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class ItemHolder {
 
@@ -55,18 +54,6 @@ public class ItemHolder {
             }
         }
     }
-
-    public List<InventoryItem> search(String query) {
-        ItemSearch search;
-        if (!query.contains(":")) {
-            search = new ItemSearch(Map.of(ItemSearch.SearchFilter.NAME, query));
-        } else {
-
-            search = new ItemSearch();
-        }
-        return search.search(allItems);
-    }
-
 
     public InventoryItem getOrCreate(ItemStack stack) {
         return allItems.stream().filter(item -> ItemSerializer.areEqual(item.getStack(), stack)).findFirst().orElseGet(() -> {
