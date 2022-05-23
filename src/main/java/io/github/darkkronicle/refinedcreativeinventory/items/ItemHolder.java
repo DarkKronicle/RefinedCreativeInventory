@@ -9,9 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ItemHolder {
 
@@ -66,6 +64,32 @@ public class ItemHolder {
     public void setItems(List<InventoryItem> items) {
         Collections.sort(items);
         this.allItems = items;
+    }
+
+    public Map<ItemGroup, List<InventoryItem>> getGroups() {
+        HashMap<ItemGroup, List<InventoryItem>> stacks = new HashMap<>();
+        for (InventoryItem item : ItemHolder.getInstance().getAllItems()) {
+            if (item.getGroups().isEmpty()) {
+                stacks.compute(null, (k, v) -> {
+                    if (v == null) {
+                        return new ArrayList<>(List.of(item));
+                    }
+                    v.add(item);
+                    return v;
+                });
+                continue;
+            }
+            for (ItemGroup group : item.getGroups()) {
+                stacks.compute(group, (k, v) -> {
+                    if (v == null) {
+                        return new ArrayList<>(List.of(item));
+                    }
+                    v.add(item);
+                    return v;
+                });
+            }
+        }
+        return stacks;
     }
 
     public void addGroup(ItemStack item, ItemGroup group) {
