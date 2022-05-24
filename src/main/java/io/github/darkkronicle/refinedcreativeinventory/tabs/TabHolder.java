@@ -30,5 +30,6 @@ public class TabHolder {
             }
             addTab(FilterTab.fromGroup(group));
         }
+        addTab(new InventoryTab());
     }
 }
