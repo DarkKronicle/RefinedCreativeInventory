@@ -1,4 +1,4 @@
-package io.github.darkkronicle.refinedcreativeinventory.gui;
+package io.github.darkkronicle.refinedcreativeinventory.gui.components;
 
 import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.TextComponent;
@@ -15,13 +15,13 @@ import net.minecraft.util.Identifier;
 
 import java.util.List;
 
-public class RefinedItemComponent extends ItemComponent {
+public class CustomInventoryItemComponent extends ItemComponent {
 
     private final TextComponent hoverComponent;
 
     private final InventoryItem item;
 
-    public RefinedItemComponent(InventoryItem item) {
+    public CustomInventoryItemComponent(InventoryItem item) {
         super(item.getStack());
         this.item = item;
 

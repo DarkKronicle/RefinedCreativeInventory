@@ -4,24 +4,26 @@ import io.github.darkkronicle.darkkore.gui.ComponentScreen;
 import io.github.darkkronicle.darkkore.gui.components.BasicComponent;
 import io.github.darkkronicle.darkkore.gui.components.Component;
 import io.github.darkkronicle.darkkore.gui.components.impl.ButtonComponent;
-import io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.TextBoxComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.ListComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.PositionedComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.ScrollComponent;
-import io.github.darkkronicle.darkkore.gui.elements.TextBox;
 import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.Dimensions;
 import io.github.darkkronicle.darkkore.util.StringUtil;
 import io.github.darkkronicle.darkkore.util.render.RenderUtil;
+import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInventoryItemComponent;
+import io.github.darkkronicle.refinedcreativeinventory.gui.components.HotbarComponent;
+import io.github.darkkronicle.refinedcreativeinventory.gui.components.ItemsComponent;
+import io.github.darkkronicle.refinedcreativeinventory.gui.components.RefinedItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
-import io.github.darkkronicle.refinedcreativeinventory.tabs.FilterTab;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.TabHolder;
-import net.minecraft.client.MinecraftClient;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -34,14 +36,14 @@ import java.util.List;
 
 public class InventoryScreen extends ComponentScreen {
 
-    private ItemStack selectedStack = null;
-    private ListComponent items;
+    @Setter @Getter private ItemStack selectedStack = null;
+    private ItemsComponent items;
     private ListComponent tabs;
     private TextBoxComponent searchBox;
     private Runnable refocusSearch;
     private Runnable unfocusSearch;
 
-    private ItemComponent hoveredSlot = null;
+    @Getter @Setter protected ItemComponent hoveredSlot = null;
 
     private final static ItemStack blank = new ItemStack(Items.AIR);
 
@@ -99,6 +101,7 @@ public class InventoryScreen extends ComponentScreen {
         bounds = new Dimensions(mainWidth, screen.getHeight() - 100);
 
         tabs = new ListComponent(22, -1, true);
+        tabs.setTopPad(0);;
         if (tab == null) {
             tab = TabHolder.getInstance().getTabs().get(0);
         }
@@ -107,9 +110,7 @@ public class InventoryScreen extends ComponentScreen {
                 new ScrollComponent(tabs, 22, screen.getHeight() - 100, true
         ), 2, 40, 22, screen.getHeight() - 100).setOutlineColor(new Color(0, 0, 0, 255)));
 
-        items = new ListComponent(mainWidth, -1, false);
-        items.setBottomPad(10);
-        items.setTopPad(10);
+        items = new ItemsComponent(mainWidth);
         setItems(lastSearch);
         addComponent(new PositionedComponent(
                 new ScrollComponent(items, mainWidth, screen.getHeight() - 100, true
@@ -130,48 +131,11 @@ public class InventoryScreen extends ComponentScreen {
         }
 
         // Hotbar
-        ListComponent hotbar = new ListComponent(-1, -1, false);
-        for (int i = 0; i < 9; i++) {
-            final int j = i;
-            InventoryItemComponent item = new InventoryItemComponent(client.player.getInventory(), i) {
-                @Override
-                public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
-                    if (button == 0) {
-                        if (selectedStack != null) {
-                            setHotbarSlot(selectedStack, j);
-                            selectedStack = null;
-                        } else {
-                            if (hasShiftDown()) {
-                                setHotbarSlot(null, j);
-                            } else {
-                                ItemStack stack = client.player.getInventory().getStack(j);
-                                if (stack != null && !stack.isEmpty()) {
-                                    selectedStack = stack;
-                                    setHotbarSlot(null, j);
-                                }
-                            }
-                        }
-                    }
-                    return true;
-                }
-            };
-            item.setOnHoveredConsumer((comp) -> {
-                comp.setBackgroundColor(new Color(150, 100, 100, 150));
-                hoveredSlot = item;
-            });
-            item.setOnHoveredStoppedConsumer((comp) -> {
-                comp.setBackgroundColor(null);
-                if (hoveredSlot == item) {
-                    // In case both switch at once
-                    hoveredSlot = null;
-                }
-            });
-            hotbar.addComponent(item);
-        }
-        hotbar.setOutlineColor(new Color(0, 0, 0, 255));
+        ListComponent hotbar = new HotbarComponent(this);
         addComponent(new PositionedComponent(
                 hotbar, mainX, screen.getHeight() - 52, hotbar.getBoundingBox().width(), hotbar.getBoundingBox().height()
         ));
+        hotbar.setOutlineColor(new Color(0, 0, 0, 255));
 
         searchBox = new TextBoxComponent(lastSearch, mainWidth, 14, this::onChange);
 
@@ -217,7 +181,7 @@ public class InventoryScreen extends ComponentScreen {
         ));
     }
 
-    private void setHotbarSlot(@Nullable ItemStack item, int slot) {
+    public void setHotbarSlot(@Nullable ItemStack item, int slot) {
         if (item == null) {
             item = blank;
         }
@@ -225,34 +189,8 @@ public class InventoryScreen extends ComponentScreen {
         client.interactionManager.clickCreativeStack(item, 36 + slot);
     }
 
-    public RefinedItemComponent createItemComponent(InventoryItem item) {
-        RefinedItemComponent component = new RefinedItemComponent(item) {
-            @Override
-            public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
-                if (hasShiftDown() && button == 1) {
-                    setFirstHotbarOpen(this.getStack());
-                    return true;
-                }
-                if (button == 0) {
-                    selectedStack = this.getStack();
-                    if (hasShiftDown()) {
-                        selectedStack.setCount(selectedStack.getMaxCount());
-                    }
-                }
-                return true;
-            }
-        };
-        component.setOnHoveredConsumer(comp -> {
-            comp.setBackgroundColor(new Color(150, 150, 150, 150));
-            hoveredSlot = component;
-        });
-        component.setOnHoveredStoppedConsumer(comp -> {
-            comp.setBackgroundColor(null);
-            if (hoveredSlot == component) {
-                hoveredSlot = null;
-            }
-        });
-        return component;
+    public CustomInventoryItemComponent createItemComponent(InventoryItem item) {
+        return new RefinedItemComponent(this, item);
     }
 
     public void setFirstHotbarOpen(ItemStack stack) {
@@ -299,11 +237,11 @@ public class InventoryScreen extends ComponentScreen {
             return true;
         }
         if (hoveredSlot != null) {
-            if (hoveredSlot instanceof InventoryItemComponent && this.client.options.swapHandsKey.matchesKey(keyCode, scanCode)) {
+            if (hoveredSlot instanceof io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent && this.client.options.swapHandsKey.matchesKey(keyCode, scanCode)) {
                 if (searchBox.isSelected()) {
                     unfocusSearch.run();
                 }
-                this.client.interactionManager.clickSlot(0, ((InventoryItemComponent) hoveredSlot).getIndex(), 40, SlotActionType.SWAP, client.player);
+                this.client.interactionManager.clickSlot(0, ((io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent) hoveredSlot).getIndex(), 40, SlotActionType.SWAP, client.player);
                 return true;
             }
 
