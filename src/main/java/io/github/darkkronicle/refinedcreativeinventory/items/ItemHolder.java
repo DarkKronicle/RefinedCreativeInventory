@@ -61,6 +61,21 @@ public class ItemHolder {
         });
     }
 
+    public void addIfNotExist(InventoryItem item) {
+        if (!allItems.contains(item)) {
+            allItems.add(item);
+            Collections.sort(allItems);
+        }
+    }
+
+    public boolean contains(InventoryItem item) {
+        return allItems.contains(item);
+    }
+
+    public Optional<InventoryItem> get(ItemStack stack) {
+        return allItems.stream().filter(item -> ItemSerializer.areEqual(item.getStack(), stack)).findFirst();
+    }
+
     public void setItems(List<InventoryItem> items) {
         Collections.sort(items);
         this.allItems = items;

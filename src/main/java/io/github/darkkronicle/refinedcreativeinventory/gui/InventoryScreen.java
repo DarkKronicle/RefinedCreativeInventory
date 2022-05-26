@@ -4,6 +4,7 @@ import io.github.darkkronicle.darkkore.gui.ComponentScreen;
 import io.github.darkkronicle.darkkore.gui.components.BasicComponent;
 import io.github.darkkronicle.darkkore.gui.components.Component;
 import io.github.darkkronicle.darkkore.gui.components.impl.ButtonComponent;
+import io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.TextBoxComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.ListComponent;
@@ -18,8 +19,6 @@ import io.github.darkkronicle.refinedcreativeinventory.gui.components.HotbarComp
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.ItemsComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.RefinedItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
-import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
-import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.TabHolder;
 import lombok.Getter;
@@ -32,7 +31,6 @@ import net.minecraft.screen.slot.SlotActionType;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.List;
 
 public class InventoryScreen extends ComponentScreen {
 
@@ -47,24 +45,13 @@ public class InventoryScreen extends ComponentScreen {
 
     private final static ItemStack blank = new ItemStack(Items.AIR);
 
-    private Dimensions bounds;
-
-    private static ItemTab tab = null;
+    @Getter private static ItemTab tab = null;
 
     private static String lastSearch = "";
 
     protected void onChange(String string) {
         lastSearch = string;
-        setItems(string);
-    }
-
-    public void setItems(String query) {
-        if (query == null || query.isEmpty()) {
-            setItems(tab);
-            return;
-        }
-        clearTabOutline();
-        setItems(ItemSearch.fromQuery(query).search(ItemHolder.getInstance().getAllItems()));
+        items.setItems(string);
     }
 
     public void clearTabOutline() {
@@ -75,21 +62,10 @@ public class InventoryScreen extends ComponentScreen {
         }
     }
 
-    public void setItems(List<InventoryItem> list) {
-        items.clear();
-        for (InventoryItem item : list) {
-            items.addComponent(createItemComponent(item));
-        }
+    public void setTab(ItemTab tab) {
+        InventoryScreen.tab = tab;
     }
 
-    public void setItems(ItemTab tab) {
-        items.clear();
-        InventoryScreen.tab = tab;
-        clearTabOutline();
-        for (Component c : tab.getComponents(this, bounds)) {
-            items.addComponent(c);
-        }
-    }
 
     @Override
     public void initImpl() {
@@ -97,8 +73,6 @@ public class InventoryScreen extends ComponentScreen {
 
         int mainWidth = screen.getWidth() - 34;
         int mainX = 24;
-
-        bounds = new Dimensions(mainWidth, screen.getHeight() - 100);
 
         tabs = new ListComponent(22, -1, true);
         tabs.setTopPad(0);;
@@ -108,20 +82,20 @@ public class InventoryScreen extends ComponentScreen {
 
         addComponent(new PositionedComponent(
                 new ScrollComponent(tabs, 22, screen.getHeight() - 100, true
-        ), 2, 40, 22, screen.getHeight() - 100).setOutlineColor(new Color(0, 0, 0, 255)));
+        ), 2, 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
 
-        items = new ItemsComponent(mainWidth);
-        setItems(lastSearch);
+        items = new ItemsComponent(this, new Dimensions(mainWidth, screen.getHeight() - 100), mainWidth);
+        items.setItems(lastSearch);
         addComponent(new PositionedComponent(
                 new ScrollComponent(items, mainWidth, screen.getHeight() - 100, true
-        ), mainX, 40, mainWidth, screen.getHeight() - 100).setOutlineColor(new Color(0, 0, 0, 255)));
+        ), mainX, 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
 
         for (ItemTab tab : TabHolder.getInstance().getTabs()) {
             BasicComponent icon = tab.getIcon();
             icon.setOnClickedConsumer((button) -> {
                 InventoryScreen.tab = tab;
                 searchBox.setText("");
-                setItems(lastSearch);
+                items.setItems(lastSearch);
                 button.setOutlineColor(new Color(255, 255, 255, 255));
             });
             if (tab.equals(InventoryScreen.tab)) {
@@ -221,12 +195,6 @@ public class InventoryScreen extends ComponentScreen {
         }
     }
 
-
-    @Override
-    public boolean shouldPause() {
-        return false;
-    }
-
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (super.keyPressed(keyCode, scanCode, modifiers)) {
@@ -237,11 +205,11 @@ public class InventoryScreen extends ComponentScreen {
             return true;
         }
         if (hoveredSlot != null) {
-            if (hoveredSlot instanceof io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent && this.client.options.swapHandsKey.matchesKey(keyCode, scanCode)) {
+            if (hoveredSlot instanceof InventoryItemComponent && this.client.options.swapHandsKey.matchesKey(keyCode, scanCode)) {
                 if (searchBox.isSelected()) {
                     unfocusSearch.run();
                 }
-                this.client.interactionManager.clickSlot(0, ((io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent) hoveredSlot).getIndex(), 40, SlotActionType.SWAP, client.player);
+                this.client.interactionManager.clickSlot(0, ((InventoryItemComponent) hoveredSlot).getIndex(), 40, SlotActionType.SWAP, client.player);
                 return true;
             }
 
@@ -261,4 +229,10 @@ public class InventoryScreen extends ComponentScreen {
         refocusSearch.run();
         return searchBox.keyPressed(keyCode, scanCode, modifiers);
     }
+
+    @Override
+    public boolean shouldPause() {
+        return false;
+    }
+
 }

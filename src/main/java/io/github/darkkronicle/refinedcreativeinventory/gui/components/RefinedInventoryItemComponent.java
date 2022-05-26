@@ -3,9 +3,15 @@ package io.github.darkkronicle.refinedcreativeinventory.gui.components;
 import io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent;
 import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
+import io.github.darkkronicle.refinedcreativeinventory.gui.itemeditor.ItemEditorScreen;
+import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
+
+import java.util.Optional;
 
 public class RefinedInventoryItemComponent extends InventoryItemComponent {
 
@@ -28,11 +34,20 @@ public class RefinedInventoryItemComponent extends InventoryItemComponent {
                 } else {
                     ItemStack stack = MinecraftClient.getInstance().player.getInventory().getStack(index);
                     if (stack != null && !stack.isEmpty()) {
-                        parent.setSelectedStack(stack);
+                        parent.setSelectedStack(stack.copy());
                         parent.setHotbarSlot(null, index);
                     }
                 }
             }
+        } else if (button == 1) {
+            ItemStack stack = getStack();
+            Optional<InventoryItem> item = ItemHolder.getInstance().get(stack);
+            InventoryItem invItem = item.orElseGet(() -> new BasicInventoryItem(stack));
+            if (item.isEmpty()) {
+                invItem.setCustom(true);
+            }
+            MinecraftClient.getInstance().setScreen(new ItemEditorScreen(parent, invItem));
+            return true;
         }
         return true;
     }

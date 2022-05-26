@@ -5,6 +5,8 @@ import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import io.github.darkkronicle.darkkore.DarkKore;
 import io.github.darkkronicle.darkkore.config.ModConfig;
+import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
+import io.github.darkkronicle.darkkore.config.impl.JsonFileObject;
 import io.github.darkkronicle.darkkore.config.options.Option;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
@@ -27,7 +29,7 @@ public class ItemsConfig extends ModConfig {
 
     @Override
     public File getFile() {
-        return new File(CreativeInventoryConfig.getConfigDirectory(), "items.toml");
+        return new File(CreativeInventoryConfig.getConfigDirectory(), "items.json");
     }
 
     @Override
@@ -39,20 +41,20 @@ public class ItemsConfig extends ModConfig {
     public void save() {
         setupFileConfig();
         config.load();
-        List<Config> confs = new ArrayList<>();
+        List<ConfigObject> confs = new ArrayList<>();
         for (InventoryItem item : ItemHolder.getInstance().getAllItems()) {
             if (item instanceof BasicInventoryItem) {
                 if (!item.isCustom() && item.getFlags().isEmpty()) {
                     continue;
                 }
-                Config nest = config.createSubConfig();
+                ConfigObject nest = config.getConfig().createNew();
                 ItemSerializer.serialize(nest, item.getStack());
                 nest.set("flags", item.getFlags());
                 nest.set("custom", item.isCustom());
                 confs.add(nest);
             }
         }
-        config.set("items", confs);
+        config.getConfig().set("items", confs);
         config.save();
         config.close();
     }
@@ -68,19 +70,19 @@ public class ItemsConfig extends ModConfig {
                 DarkKore.LOGGER.error("Couldn't initialize config!", e);
             }
         }
-        config = FileConfig.of(getFile());
+        config = new JsonFileObject(getFile());
     }
 
     @Override
     public void rawLoad() {
         ItemHolder.getInstance().setDefaults();
         config.load();
-        List<Config> confs = config.getOrElse("items", () -> null);
+        List<ConfigObject> confs = config.getConfig().get("items");
         if (confs == null) {
             config.close();
             return;
         }
-        for (Config c : confs) {
+        for (ConfigObject c : confs) {
             ItemStack stack = ItemSerializer.deserialize(c);
             List<String> flags = c.get("flags");
             InventoryItem item = ItemHolder.getInstance().getOrCreate(stack);

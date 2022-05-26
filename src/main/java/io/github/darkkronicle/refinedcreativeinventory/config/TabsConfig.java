@@ -5,6 +5,7 @@ import com.electronwill.nightconfig.core.Config;
 import com.electronwill.nightconfig.core.file.FileConfig;
 import io.github.darkkronicle.darkkore.DarkKore;
 import io.github.darkkronicle.darkkore.config.ModConfig;
+import io.github.darkkronicle.darkkore.config.impl.NightFileObject;
 import io.github.darkkronicle.darkkore.config.options.Option;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
@@ -39,18 +40,7 @@ public class TabsConfig extends ModConfig {
     public void save() {
         setupFileConfig();
         config.load();
-        List<Config> confs = new ArrayList<>();
-        for (InventoryItem item : ItemHolder.getInstance().getAllItems()) {
-            if (item instanceof BasicInventoryItem) {
-                Config nest = config.createSubConfig();
-                Config stack = nest.createSubConfig();
-                ItemSerializer.serialize(stack, item.getStack());
-                nest.set("stack", stack);
-                nest.set("tags", item.getFlags());
-                confs.add(nest);
-            }
-        }
-        config.set("items", confs);
+
         config.save();
         config.close();
     }
@@ -66,14 +56,14 @@ public class TabsConfig extends ModConfig {
                 DarkKore.LOGGER.error("Couldn't initialize config!", e);
             }
         }
-        config = FileConfig.of(getFile());
+        config = new NightFileObject(FileConfig.of(getFile()));
     }
 
     @Override
     public void rawLoad() {
         config.load();
         List<InventoryItem> items = new ArrayList<>();
-        List<Config> confs = config.getOrElse("items", () -> null);
+        List<Config> confs = config.getConfig().get("items");
         if (confs == null) {
             config.close();
             ItemHolder.getInstance().setDefaults();

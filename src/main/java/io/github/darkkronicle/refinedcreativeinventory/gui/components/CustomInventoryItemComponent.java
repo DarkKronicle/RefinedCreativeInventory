@@ -5,6 +5,7 @@ import io.github.darkkronicle.darkkore.gui.components.impl.TextComponent;
 import io.github.darkkronicle.darkkore.util.*;
 import io.github.darkkronicle.darkkore.util.text.RawText;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
+import lombok.Getter;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemGroup;
@@ -19,7 +20,7 @@ public class CustomInventoryItemComponent extends ItemComponent {
 
     private final TextComponent hoverComponent;
 
-    private final InventoryItem item;
+    @Getter private final InventoryItem item;
 
     public CustomInventoryItemComponent(InventoryItem item) {
         super(item.getStack());
@@ -50,6 +51,14 @@ public class CustomInventoryItemComponent extends ItemComponent {
                 text.append("\n").append(new RawText("Tag: " + tags.get(0).getPath(), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
             } else {
                 text.append("\n").append(new RawText("Tags: " + String.join(", ", tags.stream().map(Identifier::getPath).toList()), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+            }
+        }
+        List<String> flags = item.getFlags();
+        if (!flags.isEmpty()) {
+            if (flags.size() == 1) {
+                text.append("\n").append(new RawText("Flag: " + flags.get(0), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
+            } else {
+                text.append("\n").append(new RawText("Flags: " + String.join(", ", flags), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
             }
         }
         hoverComponent = new TextComponent(200, -1, text);

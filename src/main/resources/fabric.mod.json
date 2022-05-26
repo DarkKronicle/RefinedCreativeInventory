@@ -18,7 +18,7 @@
     "refinedcreativeinventory.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.4",
+    "fabricloader": ">=0.12.2",
     "fabric": "*",
     "minecraft": "1.18.2"
   }

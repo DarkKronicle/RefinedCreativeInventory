@@ -57,7 +57,7 @@ public class ItemSearch {
 
     public List<InventoryItem> search(List<InventoryItem> items) {
         if (parameters.containsKey(SearchFilter.NAME)) {
-            String query = parameters.get(SearchFilter.NAME);
+            String query = parameters.get(SearchFilter.NAME).toLowerCase(Locale.ROOT);
             items = items.stream().filter(item -> {
                 if (item.getStack().getName().getString().toLowerCase(Locale.ROOT).contains(query)) {
                     return true;

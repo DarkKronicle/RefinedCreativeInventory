@@ -1,5 +1,6 @@
 package io.github.darkkronicle.refinedcreativeinventory.items;
 
+import io.github.darkkronicle.darkkore.gui.components.Component;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -16,6 +17,8 @@ public interface InventoryItem extends Comparable<InventoryItem> {
     List<Identifier> getTags();
 
     List<ItemGroup> getGroups();
+
+    List<Component> getOptionComponents(int width);
 
     boolean isCustom();
 
