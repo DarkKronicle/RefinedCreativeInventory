@@ -114,7 +114,7 @@ public class InventoryScreen extends ComponentScreen {
                 null,
                 new Color(150, 150, 150, 150),
                 button -> {
-                    CustomTab tab = new CustomTab("Custom Tab", new ItemStack(Items.STONE), "stone", true);
+                    CustomTab tab = new CustomTab("Custom Tab", new ItemStack(Items.STONE), "stone", true, 10);
                     TabHolder.getInstance().addTab(tab);
                     MinecraftClient.getInstance().setScreen(new TabEditorScreen(this, tab));
                 }

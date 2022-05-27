@@ -7,10 +7,7 @@ import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
 import io.github.darkkronicle.darkkore.config.impl.JsonFileObject;
 import io.github.darkkronicle.darkkore.config.options.Option;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
-import io.github.darkkronicle.refinedcreativeinventory.tabs.CustomTab;
-import io.github.darkkronicle.refinedcreativeinventory.tabs.InventoryTab;
-import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
-import io.github.darkkronicle.refinedcreativeinventory.tabs.TabHolder;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
@@ -71,6 +68,8 @@ public class TabsConfig extends ModConfig {
 
     @Override
     public void rawLoad() {
+        TabHolder.getInstance().getTabs().clear();
+        TabHolder.getInstance().addTab(new AllTab());
         config.load();
         List<CustomTab> tabs = new ArrayList<>();
         if (config.getConfig() == null || config.getConfig().getValues().isEmpty()) {
@@ -85,10 +84,11 @@ public class TabsConfig extends ModConfig {
             return;
         }
         for (ConfigObject c : confs) {
-            CustomTab tab = new CustomTab("Custom Tab", new ItemStack(Items.STONE), "stone", true);
+            CustomTab tab = new CustomTab("Custom Tab", new ItemStack(Items.STONE), "stone", true, 1);
             for (Option<?> option : tab.getOptions()) {
                 option.load(c);
             }
+            tab.refreshOptions();
             tabs.add(tab);
         }
         config.close();

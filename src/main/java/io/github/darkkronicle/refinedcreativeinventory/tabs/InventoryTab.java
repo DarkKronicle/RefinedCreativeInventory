@@ -35,6 +35,11 @@ public class InventoryTab implements ItemTab {
     }
 
     @Override
+    public Integer getOrder() {
+        return 500;
+    }
+
+    @Override
     public List<Component> getComponents(InventoryScreen screen, Dimensions bounds) {
         ListComponent rows = new ListComponent(-1, -1, true);
         rows.setComponentYPad(0);

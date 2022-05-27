@@ -7,6 +7,7 @@ import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import io.github.darkkronicle.refinedcreativeinventory.search.BasicItemSearch;
+import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
 import io.github.darkkronicle.refinedcreativeinventory.search.KonstructSearch;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
 
@@ -50,7 +51,7 @@ public class ItemsComponent extends ListComponent {
             return;
         }
         parent.clearTabOutline();
-        KonstructSearch search = KonstructSearch.fromString(query);
+        ItemSearch search = BasicItemSearch.fromQuery(query);
         if (search != null) {
             setItems(search.search(ItemHolder.getInstance().getAllItems()));
         } else {

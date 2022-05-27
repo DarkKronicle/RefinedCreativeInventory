@@ -56,7 +56,7 @@ public class RefinedInventoryItemComponent extends InventoryItemComponent {
     public void onHoveredImpl(int x, int y, int mouseX, int mouseY, boolean hovered) {
         super.onHoveredImpl(x, y, mouseX, mouseY, hovered);
         if (hovered) {
-            setBackgroundColor(new Color(150, 100, 100, 150));
+            setBackgroundColor(new Color(150, 150, 150, 150));
             parent.setHoveredSlot(this);
         } else {
             setBackgroundColor(null);

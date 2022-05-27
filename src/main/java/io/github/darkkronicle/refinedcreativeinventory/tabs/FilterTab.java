@@ -12,6 +12,7 @@ import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
 import io.github.darkkronicle.refinedcreativeinventory.search.KonstructSearch;
+import lombok.Setter;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 
@@ -24,11 +25,13 @@ public class FilterTab implements ItemTab {
     protected Supplier<BasicComponent> icon;
     protected ItemSearch search;
     protected Text name;
+    @Setter protected int order;
 
-    public FilterTab(Text name, Supplier<BasicComponent> icon, ItemSearch search) {
+    public FilterTab(Text name, Supplier<BasicComponent> icon, ItemSearch search, int order) {
         this.icon = icon;
         this.search = search;
         this.name = name;
+        this.order = order;
     }
 
     @Override
@@ -38,7 +41,16 @@ public class FilterTab implements ItemTab {
 
     @Override
     public List<InventoryItem> getItems() {
-        return search.search(ItemHolder.getInstance().getAllItems());
+        if (search != null) {
+            return search.search(ItemHolder.getInstance().getAllItems());
+        } else {
+            return ItemHolder.getInstance().getAllItems();
+        }
+    }
+
+    @Override
+    public Integer getOrder() {
+        return order;
     }
 
     @Override
@@ -53,13 +65,13 @@ public class FilterTab implements ItemTab {
         return components;
     }
 
-    public static FilterTab fromGroup(ItemGroup group) {
+    public static FilterTab fromGroup(ItemGroup group, int order) {
         return new FilterTab(group.getDisplayName(), () -> {
             ItemComponent icon = new ItemComponent(group.getIcon());
             icon.setOnHoveredConsumer(button -> button.setBackgroundColor(new Color(200, 200, 200, 200)));
             icon.setOnHoveredStoppedConsumer(button -> button.setBackgroundColor(null));
             return icon;
-        }, KonstructSearch.fromString("item.group('" + group.getName() + "') and not(item.flag('hidden'))"));
+        }, KonstructSearch.fromString("item.group('" + group.getName() + "') and not(item.flag('hidden'))"), order);
     }
 
 }

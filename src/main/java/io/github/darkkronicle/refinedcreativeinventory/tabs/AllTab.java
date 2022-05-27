@@ -34,6 +34,11 @@ public class AllTab implements ItemTab {
     }
 
     @Override
+    public Integer getOrder() {
+        return -500;
+    }
+
+    @Override
     public List<Component> getComponents(InventoryScreen screen, Dimensions bounds) {
         List<Component> components = new ArrayList<>();
         Map<ItemGroup, List<InventoryItem>> groups = ItemHolder.getInstance().getGroups();
