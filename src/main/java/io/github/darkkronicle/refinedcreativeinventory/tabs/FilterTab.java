@@ -10,24 +10,24 @@ import io.github.darkkronicle.darkkore.util.Dimensions;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
-import io.github.darkkronicle.refinedcreativeinventory.search.BasicItemSearch;
+import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
+import io.github.darkkronicle.refinedcreativeinventory.search.KonstructSearch;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class FilterTab implements ItemTab {
 
     protected Supplier<BasicComponent> icon;
-    protected Map<BasicItemSearch.SearchFilter, String> query;
+    protected ItemSearch search;
     protected Text name;
 
-    public FilterTab(Text name, Supplier<BasicComponent> icon, Map<BasicItemSearch.SearchFilter, String> query) {
+    public FilterTab(Text name, Supplier<BasicComponent> icon, ItemSearch search) {
         this.icon = icon;
-        this.query = query;
+        this.search = search;
         this.name = name;
     }
 
@@ -38,7 +38,7 @@ public class FilterTab implements ItemTab {
 
     @Override
     public List<InventoryItem> getItems() {
-        return new BasicItemSearch(query).search(ItemHolder.getInstance().getAllItems());
+        return search.search(ItemHolder.getInstance().getAllItems());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class FilterTab implements ItemTab {
             icon.setOnHoveredConsumer(button -> button.setBackgroundColor(new Color(200, 200, 200, 200)));
             icon.setOnHoveredStoppedConsumer(button -> button.setBackgroundColor(null));
             return icon;
-        }, Map.of(BasicItemSearch.SearchFilter.GROUP, group.getName()));
+        }, KonstructSearch.fromString("item.group('" + group.getName() + "') and not(item.flag('hidden'))"));
     }
 
 }

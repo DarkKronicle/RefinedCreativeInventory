@@ -1,6 +1,7 @@
 package io.github.darkkronicle.refinedcreativeinventory.tabs;
 
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.item.ItemGroup;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class TabHolder {
         return INSTANCE;
     }
 
-    @Getter  private List<ItemTab> tabs = new ArrayList<>();
+    @Getter @Setter private List<ItemTab> tabs = new ArrayList<>();
 
     private TabHolder() {}
 
@@ -28,7 +29,7 @@ public class TabHolder {
             if (group.equals(ItemGroup.HOTBAR) || group.equals(ItemGroup.SEARCH) || group.equals(ItemGroup.INVENTORY)) {
                 continue;
             }
-            addTab(FilterTab.fromGroup(group));
+            addTab(CustomTab.fromGroup(group));
         }
         addTab(new InventoryTab());
     }

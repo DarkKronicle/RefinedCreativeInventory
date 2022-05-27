@@ -1,17 +1,18 @@
 package io.github.darkkronicle.refinedcreativeinventory.config;
 
 
-import com.electronwill.nightconfig.core.Config;
-import com.electronwill.nightconfig.core.file.FileConfig;
 import io.github.darkkronicle.darkkore.DarkKore;
 import io.github.darkkronicle.darkkore.config.ModConfig;
-import io.github.darkkronicle.darkkore.config.impl.NightFileObject;
+import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
+import io.github.darkkronicle.darkkore.config.impl.JsonFileObject;
 import io.github.darkkronicle.darkkore.config.options.Option;
-import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
-import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
-import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.CustomTab;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.InventoryTab;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.TabHolder;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,23 +29,13 @@ public class TabsConfig extends ModConfig {
 
     @Override
     public File getFile() {
-        return new File(CreativeInventoryConfig.getConfigDirectory(), "tabs.toml");
+        return new File(CreativeInventoryConfig.getConfigDirectory(), "tabs.json");
     }
 
     @Override
     public List<Option<?>> getOptions() {
         return null;
     }
-
-    @Override
-    public void save() {
-        setupFileConfig();
-        config.load();
-
-        config.save();
-        config.close();
-    }
-
 
     @Override
     public void setupFileConfig() {
@@ -56,27 +47,56 @@ public class TabsConfig extends ModConfig {
                 DarkKore.LOGGER.error("Couldn't initialize config!", e);
             }
         }
-        config = new NightFileObject(FileConfig.of(getFile()));
+        config = new JsonFileObject(getFile());
+    }
+
+    @Override
+    public void save() {
+        setupFileConfig();
+        config.load();
+        List<ConfigObject> tabsSaved = new ArrayList<>();
+        for (ItemTab tab : TabHolder.getInstance().getTabs()) {
+            if (tab instanceof CustomTab) {
+                ConfigObject nest = config.getConfig().createNew();
+                for (Option<?> option : ((CustomTab) tab).getOptions()) {
+                    option.save(nest);
+                }
+                tabsSaved.add(nest);
+            }
+        }
+        config.getConfig().set("tabs", tabsSaved);
+        config.save();
+        config.close();
     }
 
     @Override
     public void rawLoad() {
         config.load();
-        List<InventoryItem> items = new ArrayList<>();
-        List<Config> confs = config.getConfig().get("items");
-        if (confs == null) {
+        List<CustomTab> tabs = new ArrayList<>();
+        if (config.getConfig() == null || config.getConfig().getValues().isEmpty()) {
             config.close();
-            ItemHolder.getInstance().setDefaults();
+            TabHolder.getInstance().setVanilla();
             return;
         }
-        for (Config c : confs) {
-            ItemStack stack = ItemSerializer.deserialize(c.get("stack"));
-            List<String> tags = c.get("tags");
-            items.add(new BasicInventoryItem(stack, tags));
+        List<ConfigObject> confs = config.getConfig().get("tabs");
+        if (confs == null) {
+            config.close();
+            TabHolder.getInstance().setVanilla();
+            return;
+        }
+        for (ConfigObject c : confs) {
+            CustomTab tab = new CustomTab("Custom Tab", new ItemStack(Items.STONE), "stone", true);
+            for (Option<?> option : tab.getOptions()) {
+                option.load(c);
+            }
+            tabs.add(tab);
         }
         config.close();
-        if (items.size() > 0) {
-            ItemHolder.getInstance().setItems(items);
+        if (tabs.size() > 0) {
+            for (CustomTab tab : tabs) {
+                TabHolder.getInstance().addTab(tab);
+            }
+            TabHolder.getInstance().addTab(new InventoryTab());
         } else {
             ItemHolder.getInstance().setDefaults();
         }

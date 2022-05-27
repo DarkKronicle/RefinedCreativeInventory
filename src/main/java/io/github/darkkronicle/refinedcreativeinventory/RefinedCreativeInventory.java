@@ -3,6 +3,7 @@ package io.github.darkkronicle.refinedcreativeinventory;
 import io.github.darkkronicle.darkkore.config.ConfigurationManager;
 import io.github.darkkronicle.darkkore.intialization.InitializationHandler;
 import io.github.darkkronicle.refinedcreativeinventory.config.ItemsConfig;
+import io.github.darkkronicle.refinedcreativeinventory.config.TabsConfig;
 import io.github.darkkronicle.refinedcreativeinventory.items.TagHolder;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -17,6 +18,7 @@ public class RefinedCreativeInventory implements ClientModInitializer {
     public void onInitializeClient() {
         InitializationHandler.getInstance().registerInitializer(MOD_ID, 0, new InitHandler());
         ConfigurationManager.getInstance().add(ItemsConfig.getInstance());
+        ConfigurationManager.getInstance().add(TabsConfig.getInstance());
     }
 
     public static void refresh() {

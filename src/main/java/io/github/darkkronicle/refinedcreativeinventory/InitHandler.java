@@ -20,7 +20,6 @@ public class InitHandler implements Initializer {
                 CommandUtil.literal("refined").executes(ClientCommand.of(context -> InfoUtil.sendChatMessage("RefinedCreativeInventory by DarkKronicle"))).build()
         );
         CommandManager.getInstance().addCommand(command);
-        TabHolder.getInstance().setVanilla();
     }
 
 }

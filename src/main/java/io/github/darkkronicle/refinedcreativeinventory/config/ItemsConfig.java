@@ -38,6 +38,19 @@ public class ItemsConfig extends ModConfig {
     }
 
     @Override
+    public void setupFileConfig() {
+        if (!getFile().exists()) {
+            try {
+                getFile().getParentFile().mkdirs();
+                getFile().createNewFile();
+            } catch (IOException e) {
+                DarkKore.LOGGER.error("Couldn't initialize config!", e);
+            }
+        }
+        config = new JsonFileObject(getFile());
+    }
+
+    @Override
     public void save() {
         setupFileConfig();
         config.load();
@@ -57,20 +70,6 @@ public class ItemsConfig extends ModConfig {
         config.getConfig().set("items", confs);
         config.save();
         config.close();
-    }
-
-
-    @Override
-    public void setupFileConfig() {
-        if (!getFile().exists()) {
-            try {
-                getFile().getParentFile().mkdirs();
-                getFile().createNewFile();
-            } catch (IOException e) {
-                DarkKore.LOGGER.error("Couldn't initialize config!", e);
-            }
-        }
-        config = new JsonFileObject(getFile());
     }
 
     @Override
