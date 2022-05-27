@@ -3,10 +3,7 @@ package io.github.darkkronicle.refinedcreativeinventory.gui;
 import io.github.darkkronicle.darkkore.gui.ComponentScreen;
 import io.github.darkkronicle.darkkore.gui.components.BasicComponent;
 import io.github.darkkronicle.darkkore.gui.components.Component;
-import io.github.darkkronicle.darkkore.gui.components.impl.ButtonComponent;
-import io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent;
-import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
-import io.github.darkkronicle.darkkore.gui.components.impl.TextBoxComponent;
+import io.github.darkkronicle.darkkore.gui.components.impl.*;
 import io.github.darkkronicle.darkkore.gui.components.transform.ListComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.PositionedComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.ScrollComponent;
@@ -14,20 +11,26 @@ import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.Dimensions;
 import io.github.darkkronicle.darkkore.util.StringUtil;
 import io.github.darkkronicle.darkkore.util.render.RenderUtil;
+import io.github.darkkronicle.refinedcreativeinventory.RefinedCreativeInventory;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInventoryItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.HotbarComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.ItemsComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.RefinedItemComponent;
+import io.github.darkkronicle.refinedcreativeinventory.gui.tabeditor.TabEditorScreen;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.search.BasicItemSearch;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.CustomTab;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.TabHolder;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
@@ -66,7 +69,6 @@ public class InventoryScreen extends ComponentScreen {
         InventoryScreen.tab = tab;
     }
 
-
     @Override
     public void initImpl() {
         Dimensions screen = Dimensions.getScreen();
@@ -75,7 +77,7 @@ public class InventoryScreen extends ComponentScreen {
         int mainX = 24;
 
         tabs = new ListComponent(22, -1, true);
-        tabs.setTopPad(0);;
+        tabs.setTopPad(0);
         if (tab == null) {
             tab = TabHolder.getInstance().getTabs().get(0);
         }
@@ -91,7 +93,7 @@ public class InventoryScreen extends ComponentScreen {
         ), mainX, 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
 
         for (ItemTab tab : TabHolder.getInstance().getTabs()) {
-            BasicComponent icon = tab.getIcon();
+            BasicComponent icon = tab.getIcon(this);
             icon.setOnClickedConsumer((button) -> {
                 InventoryScreen.tab = tab;
                 searchBox.setText("");
@@ -103,6 +105,25 @@ public class InventoryScreen extends ComponentScreen {
             }
             tabs.addComponent(icon);
         }
+        IconButtonComponent add = new IconButtonComponent(
+                new Identifier(RefinedCreativeInventory.MOD_ID, "textures/gui/icon/add.png"),
+                18,
+                18,
+                32,
+                32,
+                null,
+                new Color(150, 150, 150, 150),
+                button -> {
+                    CustomTab tab = new CustomTab("Custom Tab", new ItemStack(Items.STONE), BasicItemSearch.fromQuery("stone").getParameters());
+                    TabHolder.getInstance().addTab(tab);
+                    MinecraftClient.getInstance().setScreen(new TabEditorScreen(this, tab));
+                }
+        );
+        add.setRightPadding(0);
+        add.setBottomPadding(0);
+        add.setTopPadding(0);
+        add.setLeftPadding(0);
+        tabs.addComponent(add);
 
         // Hotbar
         ListComponent hotbar = new HotbarComponent(this);

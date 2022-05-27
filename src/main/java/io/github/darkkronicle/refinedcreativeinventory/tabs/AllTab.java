@@ -21,7 +21,7 @@ import java.util.*;
 public class AllTab implements ItemTab {
 
     @Override
-    public BasicComponent getIcon() {
+    public BasicComponent getIcon(InventoryScreen parent) {
         ItemComponent icon = new ItemComponent(new ItemStack(Items.NETHER_STAR));
         icon.setOnHoveredConsumer(button -> button.setBackgroundColor(new Color(200, 200, 200, 200)));
         icon.setOnHoveredStoppedConsumer(button -> button.setBackgroundColor(null));

@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ItemTab {
 
-    BasicComponent getIcon();
+    BasicComponent getIcon(InventoryScreen parent);
 
     List<InventoryItem> getItems();
 

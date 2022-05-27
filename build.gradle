@@ -2,7 +2,7 @@ plugins {
     id 'fabric-loom' version '0.12-SNAPSHOT'
     id 'maven-publish'
     id "io.freefair.lombok" version "6.0.0-m2"
-//    id 'io.github.juuxel.loom-quiltflower' version '1.6.0'
+    id 'io.github.juuxel.loom-quiltflower' version '1.6.0'
 }
 
 version = project.mod_version

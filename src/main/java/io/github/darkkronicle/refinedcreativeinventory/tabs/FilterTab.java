@@ -2,8 +2,6 @@ package io.github.darkkronicle.refinedcreativeinventory.tabs;
 
 import io.github.darkkronicle.darkkore.gui.components.BasicComponent;
 import io.github.darkkronicle.darkkore.gui.components.Component;
-import io.github.darkkronicle.darkkore.gui.components.impl.ButtonComponent;
-import io.github.darkkronicle.darkkore.gui.components.impl.IconButtonComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.TextComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.ListComponent;
@@ -12,8 +10,7 @@ import io.github.darkkronicle.darkkore.util.Dimensions;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
-import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
-import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
+import io.github.darkkronicle.refinedcreativeinventory.search.BasicItemSearch;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 
@@ -24,24 +21,24 @@ import java.util.function.Supplier;
 
 public class FilterTab implements ItemTab {
 
-    private Supplier<BasicComponent> icon;
-    private Map<ItemSearch.SearchFilter, String> query;
-    private Text name;
+    protected Supplier<BasicComponent> icon;
+    protected Map<BasicItemSearch.SearchFilter, String> query;
+    protected Text name;
 
-    public FilterTab(Text name, Supplier<BasicComponent> icon, Map<ItemSearch.SearchFilter, String> query) {
+    public FilterTab(Text name, Supplier<BasicComponent> icon, Map<BasicItemSearch.SearchFilter, String> query) {
         this.icon = icon;
         this.query = query;
         this.name = name;
     }
 
     @Override
-    public BasicComponent getIcon() {
+    public BasicComponent getIcon(InventoryScreen parent) {
         return icon.get();
     }
 
     @Override
     public List<InventoryItem> getItems() {
-        return new ItemSearch(query).search(ItemHolder.getInstance().getAllItems());
+        return new BasicItemSearch(query).search(ItemHolder.getInstance().getAllItems());
     }
 
     @Override
@@ -62,7 +59,7 @@ public class FilterTab implements ItemTab {
             icon.setOnHoveredConsumer(button -> button.setBackgroundColor(new Color(200, 200, 200, 200)));
             icon.setOnHoveredStoppedConsumer(button -> button.setBackgroundColor(null));
             return icon;
-        }, Map.of(ItemSearch.SearchFilter.GROUP, group.getName()));
+        }, Map.of(BasicItemSearch.SearchFilter.GROUP, group.getName()));
     }
 
 }

@@ -19,7 +19,7 @@ import java.util.List;
 public class InventoryTab implements ItemTab {
 
     @Override
-    public BasicComponent getIcon() {
+    public BasicComponent getIcon(InventoryScreen parent) {
         return new ItemComponent(Items.CHEST);
     }
 
