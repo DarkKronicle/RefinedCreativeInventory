@@ -29,6 +29,9 @@ public class ItemSerializer {
     }
 
     public boolean areEqual(ItemStack one, ItemStack two) {
+        if (one.getItem().equals(Items.AIR)) {
+            return two.getItem().equals(Items.AIR);
+        }
         if (!one.isItemEqual(two)) {
             return false;
         }

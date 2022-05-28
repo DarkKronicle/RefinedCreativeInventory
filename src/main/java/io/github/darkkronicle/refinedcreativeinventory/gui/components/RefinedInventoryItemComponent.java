@@ -1,25 +1,66 @@
 package io.github.darkkronicle.refinedcreativeinventory.gui.components;
 
-import io.github.darkkronicle.darkkore.gui.components.impl.InventoryItemComponent;
 import io.github.darkkronicle.darkkore.util.Color;
+import io.github.darkkronicle.darkkore.util.PositionedRectangle;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.gui.itemeditor.ItemEditorScreen;
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
+import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public class RefinedInventoryItemComponent extends InventoryItemComponent {
+public class RefinedInventoryItemComponent extends CustomInventoryItemComponent {
 
     private final InventoryScreen parent;
+    private final Inventory inventory;
+    private final int index;
+    private ItemStack previous;
 
     public RefinedInventoryItemComponent(InventoryScreen parent, int index) {
-        super(MinecraftClient.getInstance().player.getInventory(), index);
+        super(
+                ItemHolder.getInstance().get(
+                        MinecraftClient.getInstance().player.getInventory().getStack(index)
+                ).orElse(
+                        new BasicInventoryItem(MinecraftClient.getInstance().player.getInventory().getStack(index))
+                )
+        );
         this.parent = parent;
+        this.index = index;
+        inventory = MinecraftClient.getInstance().player.getInventory();
+        previous = inventory.getStack(index);
+        setHover();
+    }
+
+    @Override
+    public @Nullable ItemStack getStack() {
+        if (inventory == null) {
+            return null;
+        }
+        if (!ItemSerializer.areEqual(inventory.getStack(index), previous)) {
+            previous = inventory.getStack(index);
+            item = ItemHolder.getInstance().get(previous).orElse(new BasicInventoryItem(previous)
+            );
+            setHover();
+        }
+        return inventory.getStack(index);
+    }
+
+    @Override
+    public void postRender(MatrixStack matrices, PositionedRectangle renderBounds, int x, int y, int mouseX, int mouseY) {
+        if (!ItemSerializer.areEqual(inventory.getStack(index), previous)) {
+            previous = inventory.getStack(index);
+            item = ItemHolder.getInstance().get(previous).orElse(new BasicInventoryItem(previous));
+            setHover();
+        }
+        super.postRender(matrices, renderBounds, x, y, mouseX, mouseY);
     }
 
     @Override

@@ -9,6 +9,7 @@ import lombok.Getter;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -18,16 +19,22 @@ import java.util.List;
 
 public class CustomInventoryItemComponent extends ItemComponent {
 
-    private final TextComponent hoverComponent;
+    private TextComponent hoverComponent;
 
-    @Getter private final InventoryItem item;
+    @Getter protected InventoryItem item;
 
     public CustomInventoryItemComponent(InventoryItem item) {
         super(item.getStack());
         this.item = item;
+        setHover();
+    }
 
+    public void setHover() {
         FluidText text = null;
-        for (Text line : item.getStack().getTooltip(null, TooltipContext.Default.ADVANCED)) {
+        if (getStack() == null) {
+            return;
+        }
+        for (Text line : getStack().getTooltip(null, TooltipContext.Default.ADVANCED)) {
             if (text == null) {
                 text = new FluidText(line);
             } else {
@@ -74,7 +81,7 @@ public class CustomInventoryItemComponent extends ItemComponent {
 
     @Override
     public void postRender(MatrixStack matrices, PositionedRectangle renderBounds, int x, int y, int mouseX, int mouseY) {
-        if (this.isHovered()) {
+        if (this.isHovered() && getStack() != null && !getStack().getItem().equals(Items.AIR)) {
             y = y + 18;
             Dimensions screen = Dimensions.getScreen();
             Rectangle bounds = hoverComponent.getBoundingBox();

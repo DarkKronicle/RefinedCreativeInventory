@@ -13,7 +13,6 @@ import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.FluidText;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.gui.tabeditor.TabEditorScreen;
-import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import io.github.darkkronicle.refinedcreativeinventory.search.BasicItemSearch;
 import io.github.darkkronicle.refinedcreativeinventory.search.KonstructSearch;
 import lombok.Getter;
