@@ -12,7 +12,7 @@ public class RefinedItemComponent extends CustomInventoryItemComponent {
     private final InventoryScreen parent;
 
     public RefinedItemComponent(InventoryScreen parent, InventoryItem stack) {
-        super(stack);
+        super(parent, stack);
         this.parent = parent;
     }
 

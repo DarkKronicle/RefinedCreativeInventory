@@ -28,6 +28,7 @@ public class ItemEditorScreen extends ComponentScreen {
         if (item.isCustom()) {
             if (ItemHolder.getInstance().contains(item)) {
                 ButtonComponent delete = new ButtonComponent(
+                        this,
                         StringUtil.translateToText("rci.itemedit.delete"),
                         new Color(100, 100, 100, 100),
                         new Color(150, 150, 150, 150),
@@ -37,6 +38,7 @@ public class ItemEditorScreen extends ComponentScreen {
                         }
                 );
                 addComponent(new PositionedComponent(
+                        this,
                         delete,
                         10,
                         10,
@@ -45,6 +47,7 @@ public class ItemEditorScreen extends ComponentScreen {
                 ));
             } else {
                 ButtonComponent save = new ButtonComponent(
+                        this,
                         StringUtil.translateToText("rci.itemedit.add"),
                         new Color(100, 100, 100, 100),
                         new Color(150, 150, 150, 150),
@@ -54,6 +57,7 @@ public class ItemEditorScreen extends ComponentScreen {
                         }
                 );
                 addComponent(new PositionedComponent(
+                        this,
                         save,
                         10,
                         10,
@@ -64,13 +68,13 @@ public class ItemEditorScreen extends ComponentScreen {
         }
         Dimensions dimensions = Dimensions.getScreen();
         int width = dimensions.getWidth() - 20;
-        ListComponent list = new ListComponent(width, -1, true);
-        for (Component component : item.getOptionComponents(width - 2)) {
+        ListComponent list = new ListComponent(this, width, -1, true);
+        for (Component component : item.getOptionComponents(this, width - 2)) {
             list.addComponent(component);
         }
         addComponent(
-                new PositionedComponent(
-                        new ScrollComponent(list, width, dimensions.getHeight() - 50, true),
+                new PositionedComponent(this,
+                        new ScrollComponent(this, list, width, dimensions.getHeight() - 50, true),
                         10, 32, -1, -1).setOutlineColor(new Color(200, 200, 200, 200))
         );
     }

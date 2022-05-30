@@ -9,6 +9,7 @@ import io.github.darkkronicle.darkkore.util.StringUtil;
 import io.github.darkkronicle.darkkore.util.search.FindType;
 import io.github.darkkronicle.darkkore.util.search.SearchUtil;
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -18,8 +19,8 @@ public class FlagOptionComponent extends TextOptionComponent<String, StringOptio
 
     private final BasicInventoryItem item;
 
-    private FlagOptionComponent(BasicInventoryItem item, StringOption option, int width) {
-        super(option, width);
+    private FlagOptionComponent(Screen parent, BasicInventoryItem item, StringOption option, int width) {
+        super(parent, option, width);
         this.item = item;
     }
 
@@ -43,10 +44,10 @@ public class FlagOptionComponent extends TextOptionComponent<String, StringOptio
         return option.getValue();
     }
 
-    public static FlagOptionComponent of(BasicInventoryItem item, int width) {
+    public static FlagOptionComponent of(Screen parent, BasicInventoryItem item, int width) {
         StringOption option = new StringOption("flags", "rci.itemedit.flags", "rci.itemedit.info.flags", "");
         option.setValue(String.join(",", item.getFlags()));
-        return new FlagOptionComponent(item, option, width);
+        return new FlagOptionComponent(parent, item, option, width);
     }
 
 

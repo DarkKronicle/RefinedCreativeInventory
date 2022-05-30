@@ -20,7 +20,7 @@ public class InventoryTab implements ItemTab {
 
     @Override
     public BasicComponent getIcon(InventoryScreen parent) {
-        return new ItemComponent(Items.CHEST);
+        return new ItemComponent(parent, Items.CHEST);
     }
 
     @Override
@@ -41,10 +41,24 @@ public class InventoryTab implements ItemTab {
 
     @Override
     public List<Component> getComponents(InventoryScreen screen, Dimensions bounds) {
-        ListComponent rows = new ListComponent(-1, -1, true);
+        ListComponent rows = new ListComponent(screen, -1, -1, true);
         rows.setComponentYPad(0);
         for (int row = 1; row <= 3; row++) {
-            ListComponent columns = new ListComponent(-1, -1, false);
+            ListComponent columns = new ListComponent(screen, -1, -1, false);
+            for (int column = 0; column < 9; column++) {
+                columns.addComponent(new RefinedInventoryItemComponent(screen, row * 9 + column).setOutlineColor(new Color(0, 0, 0, 255)));
+            }
+            rows.addComponent(columns);
+        }
+
+        return List.of(rows);
+    }
+
+    public static List<Component> getInventoryComponents(InventoryScreen screen, Dimensions bounds) {
+        ListComponent rows = new ListComponent(screen, -1, -1, true);
+        rows.setComponentYPad(0);
+        for (int row = 1; row <= 3; row++) {
+            ListComponent columns = new ListComponent(screen, -1, -1, false);
             for (int column = 0; column < 9; column++) {
                 columns.addComponent(new RefinedInventoryItemComponent(screen, row * 9 + column).setOutlineColor(new Color(0, 0, 0, 255)));
             }

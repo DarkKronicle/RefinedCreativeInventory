@@ -25,7 +25,7 @@ public class ItemsComponent extends ListComponent {
      * @param width    Width
      */
     public ItemsComponent(InventoryScreen parent, Dimensions bounds, int width) {
-        super(width, -1, false);
+        super(parent, width, -1, false);
         this.parent = parent;
         this.bounds = bounds;
     }

@@ -5,6 +5,7 @@ import io.github.darkkronicle.darkkore.gui.components.BasicComponent;
 import io.github.darkkronicle.darkkore.gui.components.Component;
 import io.github.darkkronicle.darkkore.gui.components.impl.*;
 import io.github.darkkronicle.darkkore.gui.components.transform.ListComponent;
+import io.github.darkkronicle.darkkore.gui.components.transform.MultiComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.PositionedComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.ScrollComponent;
 import io.github.darkkronicle.darkkore.util.Color;
@@ -12,14 +13,16 @@ import io.github.darkkronicle.darkkore.util.Dimensions;
 import io.github.darkkronicle.darkkore.util.StringUtil;
 import io.github.darkkronicle.darkkore.util.render.RenderUtil;
 import io.github.darkkronicle.refinedcreativeinventory.RefinedCreativeInventory;
+import io.github.darkkronicle.refinedcreativeinventory.config.CreativeInventoryConfig;
+import io.github.darkkronicle.refinedcreativeinventory.config.CreativeInventoryConfigScreen;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInventoryItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.HotbarComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.ItemsComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.RefinedItemComponent;
-import io.github.darkkronicle.refinedcreativeinventory.gui.tabeditor.TabEditorScreen;
+import io.github.darkkronicle.refinedcreativeinventory.search.tabeditor.TabEditorScreen;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
-import io.github.darkkronicle.refinedcreativeinventory.search.BasicItemSearch;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.CustomTab;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.InventoryTab;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.ItemTab;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.TabHolder;
 import lombok.Getter;
@@ -73,23 +76,37 @@ public class InventoryScreen extends ComponentScreen {
     public void initImpl() {
         Dimensions screen = Dimensions.getScreen();
 
+        boolean showInventory = CreativeInventoryConfig.getInstance().getInventorySplit().getValue();
         int mainWidth = screen.getWidth() - 34;
+        int itemsWidth = mainWidth;
+
+        if (showInventory) {
+            ListComponent inventory = new ListComponent(this, -1, -1, true);
+            for (Component component : InventoryTab.getInventoryComponents(this, screen)) {
+                inventory.addComponent(component);
+            }
+            addComponent(new PositionedComponent(this,
+                    new ScrollComponent(this, inventory, inventory.getWidth(), screen.getHeight() - 100, true
+            ), 24 + mainWidth - inventory.getWidth(), 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
+            itemsWidth = itemsWidth - inventory.getWidth();
+        }
+
         int mainX = 24;
 
-        tabs = new ListComponent(22, -1, true);
+        tabs = new ListComponent(this, 22, -1, true);
         tabs.setTopPad(0);
         if (tab == null) {
             tab = TabHolder.getInstance().getTabs().get(0);
         }
 
-        addComponent(new PositionedComponent(
-                new ScrollComponent(tabs, 22, screen.getHeight() - 100, true
+        addComponent(new PositionedComponent(this,
+                new ScrollComponent(this, tabs, 22, screen.getHeight() - 100, true
         ), 2, 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
 
-        items = new ItemsComponent(this, new Dimensions(mainWidth, screen.getHeight() - 100), mainWidth);
+        items = new ItemsComponent(this, new Dimensions(itemsWidth, screen.getHeight() - 100), itemsWidth);
         items.setItems(lastSearch);
-        addComponent(new PositionedComponent(
-                new ScrollComponent(items, mainWidth, screen.getHeight() - 100, true
+        addComponent(new PositionedComponent(this,
+                new ScrollComponent(this, items, itemsWidth, screen.getHeight() - 100, true
         ), mainX, 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
 
         for (ItemTab tab : TabHolder.getInstance().getTabs()) {
@@ -106,6 +123,7 @@ public class InventoryScreen extends ComponentScreen {
             tabs.addComponent(icon);
         }
         IconButtonComponent add = new IconButtonComponent(
+                this,
                 new Identifier(RefinedCreativeInventory.MOD_ID, "textures/gui/icon/add.png"),
                 18,
                 18,
@@ -128,15 +146,16 @@ public class InventoryScreen extends ComponentScreen {
         // Hotbar
         ListComponent hotbar = new HotbarComponent(this);
         addComponent(new PositionedComponent(
-                hotbar, mainX, screen.getHeight() - 52, hotbar.getBoundingBox().width(), hotbar.getBoundingBox().height()
+                this, hotbar, mainX, screen.getHeight() - 52, hotbar.getBoundingBox().width(), hotbar.getBoundingBox().height()
         ));
         hotbar.setOutlineColor(new Color(0, 0, 0, 255));
 
-        searchBox = new TextBoxComponent(lastSearch, mainWidth, 14, this::onChange);
+        searchBox = new TextBoxComponent(this, lastSearch, mainWidth, 14, this::onChange);
 
 
         searchBox.setBackgroundColor(new Color(0, 0, 0, 255));
         PositionedComponent textBoxPos = new PositionedComponent(
+                this,
                 searchBox,
                 mainX,
                 22,
@@ -158,6 +177,7 @@ public class InventoryScreen extends ComponentScreen {
         }
 
         ButtonComponent vanilla = new ButtonComponent(
+                this,
                 -1,
                 16,
                 StringUtil.translateToText("rci.button.vanilla"),
@@ -168,8 +188,27 @@ public class InventoryScreen extends ComponentScreen {
         vanilla.setLeftPadding(2);
 
         addComponent(new PositionedComponent(
+                this,
                  vanilla,
                 2,
+                screen.getHeight() - 20,
+                -1,
+                -1
+        ));
+        ButtonComponent settings = new ButtonComponent(
+                this,
+                -1,
+                16,
+                StringUtil.translateToText("rci.button.settings"),
+                new Color(100, 100, 100, 100),
+                new Color(150, 150, 150, 150), button -> {
+            client.setScreen(new CreativeInventoryConfigScreen());
+        });
+        vanilla.setLeftPadding(2);
+        addComponent(new PositionedComponent(
+                this,
+                settings,
+                4 + vanilla.getWidth(),
                 screen.getHeight() - 20,
                 -1,
                 -1
@@ -181,7 +220,8 @@ public class InventoryScreen extends ComponentScreen {
             item = blank;
         }
         client.player.getInventory().setStack(slot, item);
-        client.interactionManager.clickCreativeStack(item, 36 + slot);
+        client.interactionManager.clickCreativeStack(item, slot);
+        client.player.playerScreenHandler.sendContentUpdates();
     }
 
     public CustomInventoryItemComponent createItemComponent(InventoryItem item) {

@@ -6,6 +6,7 @@ import io.github.darkkronicle.darkkore.util.*;
 import io.github.darkkronicle.darkkore.util.text.RawText;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import lombok.Getter;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemGroup;
@@ -23,8 +24,8 @@ public class CustomInventoryItemComponent extends ItemComponent {
 
     @Getter protected InventoryItem item;
 
-    public CustomInventoryItemComponent(InventoryItem item) {
-        super(item.getStack());
+    public CustomInventoryItemComponent(Screen parent, InventoryItem item) {
+        super(parent, item.getStack());
         this.item = item;
         setHover();
     }
@@ -68,7 +69,7 @@ public class CustomInventoryItemComponent extends ItemComponent {
                 text.append("\n").append(new RawText("Flags: " + String.join(", ", flags), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
             }
         }
-        hoverComponent = new TextComponent(200, -1, text);
+        hoverComponent = new TextComponent(parent, 200, -1, text);
         hoverComponent.setBackgroundColor(new Color(20, 20, 20, 255));
         hoverComponent.setOutlineColor(new Color(76, 13, 127, 255));
         hoverComponent.setZOffset(500);

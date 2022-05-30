@@ -1,4 +1,4 @@
-package io.github.darkkronicle.refinedcreativeinventory.gui.tabeditor;
+package io.github.darkkronicle.refinedcreativeinventory.search.tabeditor;
 
 import io.github.darkkronicle.darkkore.gui.ComponentScreen;
 import io.github.darkkronicle.darkkore.gui.components.Component;
@@ -22,15 +22,15 @@ public class TabEditorScreen extends ComponentScreen {
     @Override
     public void initImpl() {
         Dimensions dimensions = Dimensions.getScreen();
-        ListComponent list = new ListComponent(width, -1, true);
+        ListComponent list = new ListComponent(this, width, -1, true);
         int width = dimensions.getWidth() - 20;
-        for (Component component : tab.getOptionComponents(width - 2)) {
+        for (Component component : tab.getOptionComponents(this, width - 2)) {
             list.addComponent(component);
         }
         addComponent(
-                new PositionedComponent(
-                        new ScrollComponent(list, width, dimensions.getHeight() - 50, true),
-                        10, 32, -1, -1).setOutlineColor(new Color(200, 200, 200, 200))
+                new PositionedComponent(this,
+                        new ScrollComponent(this, list, width, dimensions.getHeight() - 50, true),
+                        10, 32).setOutlineColor(new Color(200, 200, 200, 200))
         );
     }
 

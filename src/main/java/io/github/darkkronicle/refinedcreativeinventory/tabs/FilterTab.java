@@ -13,21 +13,23 @@ import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import io.github.darkkronicle.refinedcreativeinventory.search.ItemSearch;
 import io.github.darkkronicle.refinedcreativeinventory.search.KonstructSearch;
 import lombok.Setter;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class FilterTab implements ItemTab {
 
-    protected Supplier<BasicComponent> icon;
+    protected Function<Screen, BasicComponent> icon;
     protected ItemSearch search;
     protected Text name;
     @Setter protected int order;
 
-    public FilterTab(Text name, Supplier<BasicComponent> icon, ItemSearch search, int order) {
+    public FilterTab(Text name, Function<Screen, BasicComponent> icon, ItemSearch search, int order) {
         this.icon = icon;
         this.search = search;
         this.name = name;
@@ -36,7 +38,7 @@ public class FilterTab implements ItemTab {
 
     @Override
     public BasicComponent getIcon(InventoryScreen parent) {
-        return icon.get();
+        return icon.apply(parent);
     }
 
     @Override
@@ -56,8 +58,8 @@ public class FilterTab implements ItemTab {
     @Override
     public List<Component> getComponents(InventoryScreen screen, Dimensions bounds) {
         List<Component> components = new ArrayList<>();
-        components.add(new TextComponent(name));
-        ListComponent list = new ListComponent(bounds.getWidth(), -1, false);
+        components.add(new TextComponent(screen, name));
+        ListComponent list = new ListComponent(screen, bounds.getWidth(), -1, false);
         for (Component c : ItemTab.super.getComponents(screen, bounds)) {
             list.addComponent(c);
         }
@@ -65,9 +67,9 @@ public class FilterTab implements ItemTab {
         return components;
     }
 
-    public static FilterTab fromGroup(ItemGroup group, int order) {
-        return new FilterTab(group.getDisplayName(), () -> {
-            ItemComponent icon = new ItemComponent(group.getIcon());
+    public static FilterTab fromGroup(Screen parent, ItemGroup group, int order) {
+        return new FilterTab(group.getDisplayName(), (screen) -> {
+            ItemComponent icon = new ItemComponent(screen, group.getIcon());
             icon.setOnHoveredConsumer(button -> button.setBackgroundColor(new Color(200, 200, 200, 200)));
             icon.setOnHoveredStoppedConsumer(button -> button.setBackgroundColor(null));
             return icon;

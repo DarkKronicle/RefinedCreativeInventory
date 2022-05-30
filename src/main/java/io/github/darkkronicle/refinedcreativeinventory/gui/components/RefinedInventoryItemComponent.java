@@ -26,7 +26,7 @@ public class RefinedInventoryItemComponent extends CustomInventoryItemComponent 
 
     public RefinedInventoryItemComponent(InventoryScreen parent, int index) {
         super(
-                ItemHolder.getInstance().get(
+                parent, ItemHolder.getInstance().get(
                         MinecraftClient.getInstance().player.getInventory().getStack(index)
                 ).orElse(
                         new BasicInventoryItem(MinecraftClient.getInstance().player.getInventory().getStack(index))

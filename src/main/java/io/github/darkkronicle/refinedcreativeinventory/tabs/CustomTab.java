@@ -12,11 +12,12 @@ import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.FluidText;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
-import io.github.darkkronicle.refinedcreativeinventory.gui.tabeditor.TabEditorScreen;
+import io.github.darkkronicle.refinedcreativeinventory.search.tabeditor.TabEditorScreen;
 import io.github.darkkronicle.refinedcreativeinventory.search.BasicItemSearch;
 import io.github.darkkronicle.refinedcreativeinventory.search.KonstructSearch;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -85,8 +86,8 @@ public class CustomTab extends FilterTab {
     }
 
     public CustomTab(String name, ItemStack icon, String query, boolean basicSearch, int order) {
-        super(new FluidText(name), () -> {
-            ItemComponent comp = new ItemComponent(icon);
+        super(new FluidText(name), (screen) -> {
+            ItemComponent comp = new ItemComponent(screen, icon);
             comp.setOnHoveredConsumer(button -> button.setBackgroundColor(new Color(200, 200, 200, 200)));
             comp.setOnHoveredStoppedConsumer(button -> button.setBackgroundColor(null));
             return comp;
@@ -97,13 +98,13 @@ public class CustomTab extends FilterTab {
         this.item.setValue(Registry.ITEM.getId(icon.getItem()).toString());
     }
 
-    public List<Component> getOptionComponents(int width) {
+    public List<Component> getOptionComponents(Screen parent, int width) {
         List<Component> components = new ArrayList<>();
-        components.add(OptionComponentHolder.getInstance().convert(nameOption, width));
-        components.add(OptionComponentHolder.getInstance().convert(item, width));
-        components.add(OptionComponentHolder.getInstance().convert(basicSearch, width));
-        components.add(OptionComponentHolder.getInstance().convert(searchOption, width));
-        components.add(OptionComponentHolder.getInstance().convert(orderOption, width));
+        components.add(OptionComponentHolder.getInstance().convert(parent, nameOption, width));
+        components.add(OptionComponentHolder.getInstance().convert(parent, item, width));
+        components.add(OptionComponentHolder.getInstance().convert(parent, basicSearch, width));
+        components.add(OptionComponentHolder.getInstance().convert(parent, searchOption, width));
+        components.add(OptionComponentHolder.getInstance().convert(parent, orderOption, width));
         return components;
     }
 
@@ -115,14 +116,14 @@ public class CustomTab extends FilterTab {
     @Override
     public BasicComponent getIcon(InventoryScreen parent) {
         CustomTab tab = this;
-        ItemComponent comp = new ItemComponent(Registry.ITEM.get(new Identifier(item.getValue()))) {
+        ItemComponent comp = new ItemComponent(parent, Registry.ITEM.get(new Identifier(item.getValue()))) {
             @Override
             public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
                 if (button == 1) {
                     MinecraftClient.getInstance().setScreen(new TabEditorScreen(parent, tab));
                     return true;
                 }
-                return false;
+                return true;
             }
         };
         comp.setOnHoveredConsumer(button -> button.setBackgroundColor(new Color(200, 200, 200, 200)));

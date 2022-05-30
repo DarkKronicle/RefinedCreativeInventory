@@ -5,14 +5,11 @@ import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 
 public class HotbarComponent extends ListComponent {
 
-    private final InventoryScreen parent;
-
     /**
      * Creates a new {@link HotbarComponent} that will manage the items within the hotbar
      */
     public HotbarComponent(InventoryScreen parent) {
-        super(-1, -1, false);
-        this.parent = parent;
+        super(parent, -1, -1, false);
         for (int i = 0; i < 9; i++) {
             addComponent(new RefinedInventoryItemComponent(parent, i));
         }

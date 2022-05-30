@@ -22,7 +22,12 @@ public class AllTab implements ItemTab {
 
     @Override
     public BasicComponent getIcon(InventoryScreen parent) {
-        ItemComponent icon = new ItemComponent(new ItemStack(Items.NETHER_STAR));
+        ItemComponent icon = new ItemComponent(parent, new ItemStack(Items.NETHER_STAR)) {
+            @Override
+            public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
+                return true;
+            }
+        };
         icon.setOnHoveredConsumer(button -> button.setBackgroundColor(new Color(200, 200, 200, 200)));
         icon.setOnHoveredStoppedConsumer(button -> button.setBackgroundColor(null));
         return icon;
@@ -53,8 +58,8 @@ public class AllTab implements ItemTab {
         }).toList();
         for (ItemGroup group : keys) {
             Text name = group == null ? StringUtil.translateToText("rci.group.other") : group.getDisplayName();
-            components.add(new TextComponent(name));
-            ListComponent list = new ListComponent(bounds.getWidth(), -1, false);
+            components.add(new TextComponent(screen, name));
+            ListComponent list = new ListComponent(screen, bounds.getWidth(), -1, false);
             for (InventoryItem c : groups.get(group)) {
                 list.addComponent(screen.createItemComponent(c));
             }
