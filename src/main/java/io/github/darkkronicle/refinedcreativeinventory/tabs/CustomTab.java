@@ -92,6 +92,7 @@ public class CustomTab extends FilterTab {
             comp.setOnHoveredStoppedConsumer(button -> button.setBackgroundColor(null));
             return comp;
         }, null, order);
+        orderOption.setValue(order);
         this.nameOption.setValue(name);
         this.basicSearch.setValue(basicSearch);
         this.searchOption.setValue(query);

@@ -1,8 +1,6 @@
 package io.github.darkkronicle.refinedcreativeinventory.config;
 
 
-import com.electronwill.nightconfig.core.Config;
-import com.electronwill.nightconfig.core.file.FileConfig;
 import io.github.darkkronicle.darkkore.DarkKore;
 import io.github.darkkronicle.darkkore.config.ModConfig;
 import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
@@ -61,9 +59,7 @@ public class ItemsConfig extends ModConfig {
                     continue;
                 }
                 ConfigObject nest = config.getConfig().createNew();
-                ItemSerializer.serialize(nest, item.getStack());
-                nest.set("flags", item.getFlags());
-                nest.set("custom", item.isCustom());
+                saveInventoryItem(nest, item);
                 confs.add(nest);
             }
         }
@@ -82,15 +78,26 @@ public class ItemsConfig extends ModConfig {
             return;
         }
         for (ConfigObject c : confs) {
-            ItemStack stack = ItemSerializer.deserialize(c);
-            List<String> flags = c.get("flags");
-            InventoryItem item = ItemHolder.getInstance().getOrCreate(stack);
-            for (String flag : flags) {
-                item.addFlag(flag);
-            }
-            item.setCustom(c.get("custom"));
+            loadInventoryItem(c, true);
         }
         config.close();
+    }
+
+    public static void saveInventoryItem(ConfigObject nest, InventoryItem item) {
+        ItemSerializer.serialize(nest, item.getStack());
+        nest.set("flags", item.getFlags());
+        nest.set("custom", item.isCustom());
+    }
+
+    public static InventoryItem loadInventoryItem(ConfigObject nest, boolean add) {
+        ItemStack stack = ItemSerializer.deserialize(nest);
+        List<String> flags = nest.get("flags");
+        InventoryItem item = add ? ItemHolder.getInstance().getOrCreate(stack) : ItemHolder.getInstance().get(stack).orElseGet(() -> new BasicInventoryItem(stack));
+        for (String flag : flags) {
+            item.addFlag(flag);
+        }
+        item.setCustom(nest.get("custom"));
+        return item;
     }
 
     @Override

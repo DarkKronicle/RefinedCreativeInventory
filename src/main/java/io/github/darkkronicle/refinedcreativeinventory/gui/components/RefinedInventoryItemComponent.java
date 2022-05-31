@@ -67,16 +67,17 @@ public class RefinedInventoryItemComponent extends CustomInventoryItemComponent 
     public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
         if (button == 0) {
             if (parent.getSelectedStack() != null) {
-                parent.setHotbarSlot(parent.getSelectedStack(), index);
-                parent.setSelectedStack(null);
+                ItemStack sel = parent.getSelectedStack();
+                parent.setSelectedStack(getStack());
+                parent.setSlot(sel, index);
             } else {
                 if (Screen.hasShiftDown()) {
-                    parent.setHotbarSlot(null, index);
+                    parent.setSlot(null, index);
                 } else {
                     ItemStack stack = MinecraftClient.getInstance().player.getInventory().getStack(index);
                     if (stack != null && !stack.isEmpty()) {
                         parent.setSelectedStack(stack.copy());
-                        parent.setHotbarSlot(null, index);
+                        parent.setSlot(null, index);
                     }
                 }
             }

@@ -5,7 +5,6 @@ import io.github.darkkronicle.darkkore.gui.components.BasicComponent;
 import io.github.darkkronicle.darkkore.gui.components.Component;
 import io.github.darkkronicle.darkkore.gui.components.impl.*;
 import io.github.darkkronicle.darkkore.gui.components.transform.ListComponent;
-import io.github.darkkronicle.darkkore.gui.components.transform.MultiComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.PositionedComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.ScrollComponent;
 import io.github.darkkronicle.darkkore.util.Color;
@@ -19,6 +18,8 @@ import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInve
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.HotbarComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.ItemsComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.RefinedItemComponent;
+import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarHolder;
+import io.github.darkkronicle.refinedcreativeinventory.hotbars.gui.HotbarHolderComponent;
 import io.github.darkkronicle.refinedcreativeinventory.search.tabeditor.TabEditorScreen;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.CustomTab;
@@ -36,6 +37,8 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.ConcurrentModificationException;
 
 
 public class InventoryScreen extends ComponentScreen {
@@ -85,10 +88,15 @@ public class InventoryScreen extends ComponentScreen {
             for (Component component : InventoryTab.getInventoryComponents(this, screen)) {
                 inventory.addComponent(component);
             }
+            addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(new Color(0, 0, 0, 255)));
+
+            HotbarHolderComponent hotbarHolder = new HotbarHolderComponent(this, HotbarHolder.getInstance(), inventory.getWidth(), -1);
+            hotbarHolder.setOutlineColor(new Color(0, 0, 0, 255));
             addComponent(new PositionedComponent(this,
-                    new ScrollComponent(this, inventory, inventory.getWidth(), screen.getHeight() - 100, true
-            ), 24 + mainWidth - inventory.getWidth(), 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
-            itemsWidth = itemsWidth - inventory.getWidth();
+                    new ScrollComponent(this, hotbarHolder, hotbarHolder.getWidth(), screen.getHeight() - 100 - inventory.getHeight(), true),
+                    24 + mainWidth - inventory.getWidth(), 40 + inventory.getHeight())
+            );
+            itemsWidth = itemsWidth - Math.max(inventory.getWidth(), hotbarHolder.getWidth());
         }
 
         int mainX = 24;
@@ -127,8 +135,8 @@ public class InventoryScreen extends ComponentScreen {
                 new Identifier(RefinedCreativeInventory.MOD_ID, "textures/gui/icon/add.png"),
                 18,
                 18,
-                32,
-                32,
+                48,
+                48,
                 null,
                 new Color(150, 150, 150, 150),
                 button -> {
@@ -141,6 +149,7 @@ public class InventoryScreen extends ComponentScreen {
         add.setBottomPadding(0);
         add.setTopPadding(0);
         add.setLeftPadding(0);
+
         tabs.addComponent(add);
 
         // Hotbar
@@ -215,13 +224,18 @@ public class InventoryScreen extends ComponentScreen {
         ));
     }
 
-    public void setHotbarSlot(@Nullable ItemStack item, int slot) {
+    public void setSlot(@Nullable ItemStack item, int slot) {
         if (item == null) {
             item = blank;
         }
         client.player.getInventory().setStack(slot, item);
-        client.interactionManager.clickCreativeStack(item, slot);
-        client.player.playerScreenHandler.sendContentUpdates();
+        if (slot < 9) {
+            client.interactionManager.clickCreativeStack(item, 36 + slot);
+        } else {
+            // Don't know why this is needed? But it breaks if it isn't
+            client.interactionManager.clickCreativeStack(item, slot);
+            client.player.playerScreenHandler.sendContentUpdates();
+        }
     }
 
     public CustomInventoryItemComponent createItemComponent(InventoryItem item) {
@@ -232,17 +246,21 @@ public class InventoryScreen extends ComponentScreen {
         for (int i = 0; i < 9; i++) {
             ItemStack current = client.player.getInventory().getStack(i);
             if (current.isEmpty()) {
-                setHotbarSlot(stack, i);
+                setSlot(stack, i);
                 return;
             }
         }
-        setHotbarSlot(stack, 0);
+        setSlot(stack, 0);
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
-            return true;
+        try {
+            if (super.mouseClicked(mouseX, mouseY, button)) {
+                return true;
+            }
+        } catch (ConcurrentModificationException e) {
+            // TODO figure out a way to cancel mouse events
         }
         selectedStack = null;
         return false;
@@ -279,7 +297,7 @@ public class InventoryScreen extends ComponentScreen {
                     if (searchBox.isSelected()) {
                         unfocusSearch.run();
                     }
-                    setHotbarSlot(hoveredSlot.getStack(), i);
+                    setSlot(hoveredSlot.getStack(), i);
                     return true;
                 }
             }
