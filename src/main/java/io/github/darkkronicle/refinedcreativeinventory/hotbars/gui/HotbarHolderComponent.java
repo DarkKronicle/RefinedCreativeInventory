@@ -20,6 +20,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 public class HotbarHolderComponent extends ListComponent {
 
@@ -46,12 +47,15 @@ public class HotbarHolderComponent extends ListComponent {
         this.clear();
         profiles.clear();
         for (HotbarProfile profile : holder.getProfiles()) {
-            ItemComponent component = new ItemComponent(parent, profile.getStack()) {
+            ItemComponent component = new ItemComponent(parent, new ItemStack(Registry.ITEM.get(new Identifier(profile.getStack().getValue())))) {
                 @Override
                 public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
                     if (button == 0) {
                         onClick(profile);
                         return true;
+                    }
+                    if (button == 1) {
+                        MinecraftClient.getInstance().setScreen(new HotbarProfileEditor(parent, profile));
                     }
                     return false;
                 }

@@ -29,7 +29,7 @@ public class HotbarProfileComponent extends ListComponent {
 
     public void updateHotbars() {
         clear();
-        addComponent(new TextComponent(parent, new FluidText(profile.getName())));
+        addComponent(new TextComponent(parent, new FluidText(profile.getName().getValue())));
         for (SavedHotbar hotbar : profile.getHotbars()) {
             addComponent(new SavedHotbarComponent(inventory, this, hotbar));
         }
@@ -54,6 +54,7 @@ public class HotbarProfileComponent extends ListComponent {
         add.setLeftPadding(0);
 
         addComponent(add);
+        holder.updateHeight();
     }
 
 }

@@ -1,12 +1,13 @@
 package io.github.darkkronicle.refinedcreativeinventory.hotbars;
 
 import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
+import io.github.darkkronicle.darkkore.config.options.Option;
+import io.github.darkkronicle.darkkore.config.options.StringOption;
 import io.github.darkkronicle.darkkore.intialization.Saveable;
-import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,13 @@ public class HotbarProfile implements Saveable {
     @Setter @Getter private int mainOne = -1;
     @Setter @Getter private int mainTwo = -1;
 
-    @Setter @Getter private String name = "Profile";
-    @Setter @Getter private ItemStack stack = new ItemStack(Items.STONE);
+    @Getter private final StringOption name = new StringOption("name", "rci.profileeditor.name", "rci.profileeditor.info.name", "Profile");
+    @Getter private final StringOption stack = new StringOption(
+            "item",
+            "rci.profileeditor.item",
+            "rci.profileeditor.info.item", "minecraft:stone",
+            "rci.profileeditor.itemtype", string -> Registry.ITEM.containsId(new Identifier(string))
+    );
 
     public HotbarProfile() {
 
@@ -43,13 +49,13 @@ public class HotbarProfile implements Saveable {
     }
 
     public void applyMainOne() {
-        if (mainOne >= 0) {
+        if (mainOne >= 0 && mainOne < hotbars.size()) {
             hotbars.get(mainOne).apply();
         }
     }
 
     public void applyMainTwo() {
-        if (mainTwo >= 0) {
+        if (mainTwo >= 0 && mainTwo < hotbars.size()) {
             hotbars.get(mainTwo).apply();
         }
     }
@@ -66,21 +72,35 @@ public class HotbarProfile implements Saveable {
             hotbar.save(nest);
             savedHotbars.add(nest);
         }
-        object.set("name", name);
-        ItemSerializer.serialize(object, stack);
+        object.set("main1", mainOne);
+        object.set("main2", mainTwo);
+        for (Option<?> option : getOptions()) {
+            option.save(object);
+        }
         object.set("hotbars", savedHotbars);
     }
 
     @Override
     public void load(ConfigObject object) {
-        name = object.get("name");
-        stack = ItemSerializer.deserialize(object);
+        for (Option<?> option : getOptions()) {
+            option.load(object);
+        }
         List<ConfigObject> savedHotbars = object.get("hotbars");
         hotbars = new ArrayList<>();
+        mainOne = object.get("main1");
+        mainTwo = object.get("main2");
         for (ConfigObject nest : savedHotbars) {
             SavedHotbar toLoad = new SavedHotbar();
             toLoad.load(nest);
             hotbars.add(toLoad);
         }
+    }
+
+    public List<Option<?>> getOptions() {
+        return List.of(name, stack);
+    }
+
+    public int indexOf(SavedHotbar hotbar) {
+        return hotbars.indexOf(hotbar);
     }
 }

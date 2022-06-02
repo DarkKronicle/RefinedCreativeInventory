@@ -90,11 +90,11 @@ public class InventoryScreen extends ComponentScreen {
             }
             addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(new Color(0, 0, 0, 255)));
 
-            HotbarHolderComponent hotbarHolder = new HotbarHolderComponent(this, HotbarHolder.getInstance(), inventory.getWidth(), -1);
+            HotbarHolderComponent hotbarHolder = new HotbarHolderComponent(this, HotbarHolder.getInstance(), -1, -1);
             hotbarHolder.setOutlineColor(new Color(0, 0, 0, 255));
             addComponent(new PositionedComponent(this,
                     new ScrollComponent(this, hotbarHolder, hotbarHolder.getWidth(), screen.getHeight() - 100 - inventory.getHeight(), true),
-                    24 + mainWidth - inventory.getWidth(), 40 + inventory.getHeight())
+                    24 + mainWidth - hotbarHolder.getWidth(), 40 + inventory.getHeight())
             );
             itemsWidth = itemsWidth - Math.max(inventory.getWidth(), hotbarHolder.getWidth());
         }
