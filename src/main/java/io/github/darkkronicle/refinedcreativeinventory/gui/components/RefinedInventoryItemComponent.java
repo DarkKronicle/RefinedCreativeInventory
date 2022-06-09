@@ -8,6 +8,8 @@ import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
@@ -16,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class RefinedInventoryItemComponent extends CustomInventoryItemComponent {
 
@@ -23,6 +26,8 @@ public class RefinedInventoryItemComponent extends CustomInventoryItemComponent 
     private final Inventory inventory;
     private final int index;
     private ItemStack previous;
+
+    @Getter @Setter private Predicate<ItemStack> allowed = null;
 
     public RefinedInventoryItemComponent(InventoryScreen parent, int index) {
         super(
@@ -66,8 +71,11 @@ public class RefinedInventoryItemComponent extends CustomInventoryItemComponent 
     @Override
     public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
         if (button == 0) {
-            if (parent.getSelectedStack() != null) {
+            if (parent.getSelectedStack() != null && !parent.getSelectedStack().isEmpty()) {
                 ItemStack sel = parent.getSelectedStack();
+                if (allowed != null && !allowed.test(sel)) {
+                    return true;
+                }
                 parent.setSelectedStack(getStack());
                 parent.setSlot(sel, index);
             } else {

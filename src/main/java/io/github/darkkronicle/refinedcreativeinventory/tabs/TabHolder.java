@@ -35,6 +35,7 @@ public class TabHolder {
             addTab(CustomTab.fromGroup(group, i));
         }
         addTab(new InventoryTab());
+        addTab(new HotbarTab());
         Collections.sort(tabs);
     }
 }

@@ -97,6 +97,7 @@ public class TabsConfig extends ModConfig {
                 TabHolder.getInstance().addTab(tab);
             }
             TabHolder.getInstance().addTab(new InventoryTab());
+            TabHolder.getInstance().addTab(new HotbarTab());
         } else {
             ItemHolder.getInstance().setDefaults();
         }

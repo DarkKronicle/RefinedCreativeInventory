@@ -29,6 +29,12 @@ public class CreativeInventoryConfig extends ModConfig {
 
     @Getter private final BooleanOption inventorySplit = new BooleanOption("inventorySplit", "rci.option.inventorysplit", "rci.option.info.inventorysplit", true);
     @Getter private final HotkeySettingsOption switchHotbars = new HotkeySettingsOption("switchHotbars", "rci.option.switchhotbars", "rci.option.info.switchhotbars", new HotkeySettings(false, false, false, List.of(GLFW.GLFW_KEY_X), PlayerContextCheck.getDefault()));
+    @Getter private final HotkeySettingsOption nextHotbar = new HotkeySettingsOption(
+            "nextHotbar", "rci.option.nextHotbar", "rci.option.info.nextHotbar",
+            new HotkeySettings(false, false, false, List.of(GLFW.GLFW_KEY_UP), PlayerContextCheck.getDefault()));
+    @Getter private final HotkeySettingsOption previousHotbar = new HotkeySettingsOption(
+            "previousHotbar", "rci.option.previousHotbar", "rci.option.info.previousHotbar",
+            new HotkeySettings(false, false, false, List.of(GLFW.GLFW_KEY_DOWN), PlayerContextCheck.getDefault()));
 
     private final List<Option<?>> options = ImmutableList.of(inventorySplit);
 

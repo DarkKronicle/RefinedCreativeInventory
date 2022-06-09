@@ -5,6 +5,7 @@ import io.github.darkkronicle.darkkore.gui.components.impl.TextComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.ListComponent;
 import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.FluidText;
+import io.github.darkkronicle.darkkore.util.text.RawText;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.RefinedItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.itemeditor.ItemEditorScreen;
@@ -60,7 +61,9 @@ public class SavedHotbarComponent extends ListComponent {
                     return true;
                 }
                 if (button == 0) {
+                    profile.getProfile().setCurrent(profile.getProfile().indexOf(hotbar));
                     getOnClick().accept(this);
+                    profile.updateHotbars();
                 } else if (button == 1) {
                     MinecraftClient.getInstance().setScreen(new SavedHotbarEditor(parent, profile, hotbar));
                 }
@@ -71,14 +74,15 @@ public class SavedHotbarComponent extends ListComponent {
         button.setWidth(18);
         button.setHeight(18);
         int ind = profile.getProfile().indexOf(hotbar);
+        if (hotbar.equals(profile.getProfile().getCurrent())) {
+            button.setBackground(new Color(100, 100, 255, 150));
+            button.setBackgroundColor(new Color(100, 100, 255, 150));
+            button.setHover(new Color(150, 150, 255, 150));
+        }
         if (profile.getProfile().getMainOne() == ind) {
-            button.setBackground(new Color(255, 100, 100, 255));
-            button.setBackgroundColor(new Color(255, 100, 100, 255));
-            button.setHover(new Color(255, 150, 150, 255));
+            button.setOutlineColor(new Color(200, 100, 100, 255));
         } else if (profile.getProfile().getMainTwo() == ind) {
-            button.setBackground(new Color(100, 255, 100, 255));
-            button.setBackgroundColor(new Color(100, 255, 100, 255));
-            button.setHover(new Color(150, 255, 150, 255));
+            button.setOutlineColor(new Color(100, 200, 100, 255));
         }
         addComponent(button);
         for (int i = 0; i < 9; i++) {
@@ -117,7 +121,7 @@ public class SavedHotbarComponent extends ListComponent {
                     return true;
                 }
             };
-            component.setOutlineColor(new Color(0, 0, 0, 255));
+            component.setOutlineColor(InventoryScreen.getSlotOutlineColor());
             addComponent(component);
         }
     }

@@ -46,6 +46,7 @@ public class ItemsComponent extends ListComponent {
     }
 
     public void setItems(String query) {
+        parent.setHoveredSlot(null);
         if (query == null || query.isEmpty()) {
             setItems(InventoryScreen.getTab());
             return;

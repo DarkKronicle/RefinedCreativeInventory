@@ -45,23 +45,34 @@ public class HotbarProfile implements Saveable {
     }
 
     public SavedHotbar getCurrent() {
+        if (current < 0) {
+            return hotbars.get(0);
+        }
+        if (current >= hotbars.size()) {
+            return hotbars.get(hotbars.size() - 1);
+        }
         return hotbars.get(current);
     }
 
     public void applyMainOne() {
         if (mainOne >= 0 && mainOne < hotbars.size()) {
             hotbars.get(mainOne).apply();
+            current = mainOne;
         }
     }
 
     public void applyMainTwo() {
         if (mainTwo >= 0 && mainTwo < hotbars.size()) {
             hotbars.get(mainTwo).apply();
+            current = mainTwo;
         }
     }
 
     public void cycle(boolean forward) {
         current = (current + (forward ? 1 : -1)) % hotbars.size();
+        if (current < 0) {
+            current = hotbars.size() - 1;
+        }
     }
 
     @Override
@@ -87,8 +98,8 @@ public class HotbarProfile implements Saveable {
         }
         List<ConfigObject> savedHotbars = object.get("hotbars");
         hotbars = new ArrayList<>();
-        mainOne = object.get("main1");
-        mainTwo = object.get("main2");
+        mainOne = ((Number) object.get("main1")).intValue();
+        mainTwo = ((Number) object.get("main2")).intValue();
         for (ConfigObject nest : savedHotbars) {
             SavedHotbar toLoad = new SavedHotbar();
             toLoad.load(nest);

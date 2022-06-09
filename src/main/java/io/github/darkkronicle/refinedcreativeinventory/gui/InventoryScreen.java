@@ -29,6 +29,7 @@ import io.github.darkkronicle.refinedcreativeinventory.tabs.TabHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
@@ -75,6 +76,14 @@ public class InventoryScreen extends ComponentScreen {
         InventoryScreen.tab = tab;
     }
 
+    public static Color getOutlineColor() {
+        return new Color(200, 200, 200, 255);
+    }
+
+    public static Color getSlotOutlineColor() {
+        return new Color(200, 200, 200, 150);
+    }
+
     @Override
     public void initImpl() {
         Dimensions screen = Dimensions.getScreen();
@@ -88,15 +97,15 @@ public class InventoryScreen extends ComponentScreen {
             for (Component component : InventoryTab.getInventoryComponents(this, screen)) {
                 inventory.addComponent(component);
             }
-            addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(new Color(0, 0, 0, 255)));
 
             HotbarHolderComponent hotbarHolder = new HotbarHolderComponent(this, HotbarHolder.getInstance(), -1, -1);
-            hotbarHolder.setOutlineColor(new Color(0, 0, 0, 255));
             addComponent(new PositionedComponent(this,
-                    new ScrollComponent(this, hotbarHolder, hotbarHolder.getWidth(), screen.getHeight() - 100 - inventory.getHeight(), true),
-                    24 + mainWidth - hotbarHolder.getWidth(), 40 + inventory.getHeight())
+                    new ScrollComponent(this, hotbarHolder, hotbarHolder.getWidth(), screen.getHeight() - 102 - inventory.getHeight(), true),
+                    24 + mainWidth - hotbarHolder.getWidth(), 40 + inventory.getHeight() + 2).setOutlineColor(getOutlineColor())
             );
-            itemsWidth = itemsWidth - Math.max(inventory.getWidth(), hotbarHolder.getWidth());
+            inventory.setWidth(hotbarHolder.getWidth());
+            itemsWidth = itemsWidth - Math.max(inventory.getWidth(), hotbarHolder.getWidth()) - 2;
+            addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(getOutlineColor()));
         }
 
         int mainX = 24;
@@ -109,13 +118,13 @@ public class InventoryScreen extends ComponentScreen {
 
         addComponent(new PositionedComponent(this,
                 new ScrollComponent(this, tabs, 22, screen.getHeight() - 100, true
-        ), 2, 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
+        ), 3, 40, -1, -1).setOutlineColor(getOutlineColor()));
 
         items = new ItemsComponent(this, new Dimensions(itemsWidth, screen.getHeight() - 100), itemsWidth);
         items.setItems(lastSearch);
         addComponent(new PositionedComponent(this,
                 new ScrollComponent(this, items, itemsWidth, screen.getHeight() - 100, true
-        ), mainX, 40, -1, -1).setOutlineColor(new Color(0, 0, 0, 255)));
+        ), mainX, 40, -1, -1).setOutlineColor(getOutlineColor()));
 
         for (ItemTab tab : TabHolder.getInstance().getTabs()) {
             BasicComponent icon = tab.getIcon(this);
@@ -155,13 +164,11 @@ public class InventoryScreen extends ComponentScreen {
         // Hotbar
         ListComponent hotbar = new HotbarComponent(this);
         addComponent(new PositionedComponent(
-                this, hotbar, mainX, screen.getHeight() - 52, hotbar.getBoundingBox().width(), hotbar.getBoundingBox().height()
+                this, hotbar, mainX, screen.getHeight() - 58, hotbar.getBoundingBox().width(), hotbar.getBoundingBox().height()
         ));
-        hotbar.setOutlineColor(new Color(0, 0, 0, 255));
+        hotbar.setOutlineColor(getOutlineColor());
 
         searchBox = new TextBoxComponent(this, lastSearch, mainWidth, 14, this::onChange);
-
-
         searchBox.setBackgroundColor(new Color(0, 0, 0, 255));
         PositionedComponent textBoxPos = new PositionedComponent(
                 this,
@@ -173,12 +180,12 @@ public class InventoryScreen extends ComponentScreen {
         );
         addComponent(textBoxPos);
         refocusSearch = () -> {
-            searchBox.setSelected(true);
             textBoxPos.setSelected(true);
+            searchBox.setSelected(true);
         };
         unfocusSearch = () -> {
-            searchBox.setSelected(false);
             textBoxPos.setSelected(false);
+            searchBox.setSelected(false);
         };
         if (!lastSearch.isEmpty()) {
             searchBox.getTextField().setSelectionStart(0);
@@ -229,13 +236,7 @@ public class InventoryScreen extends ComponentScreen {
             item = blank;
         }
         client.player.getInventory().setStack(slot, item);
-        if (slot < 9) {
-            client.interactionManager.clickCreativeStack(item, 36 + slot);
-        } else {
-            // Don't know why this is needed? But it breaks if it isn't
-            client.interactionManager.clickCreativeStack(item, slot);
-            client.player.playerScreenHandler.sendContentUpdates();
-        }
+        client.interactionManager.clickCreativeStack(item, client.player.playerScreenHandler.getSlotIndex(client.player.getInventory(), slot).getAsInt());
     }
 
     public CustomInventoryItemComponent createItemComponent(InventoryItem item) {
@@ -261,6 +262,7 @@ public class InventoryScreen extends ComponentScreen {
             }
         } catch (ConcurrentModificationException e) {
             // TODO figure out a way to cancel mouse events
+            return true;
         }
         selectedStack = null;
         return false;
@@ -277,13 +279,14 @@ public class InventoryScreen extends ComponentScreen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (super.keyPressed(keyCode, scanCode, modifiers)) {
+            refocusSearch.run();
             return true;
         }
         if (client.options.inventoryKey.matchesKey(keyCode, scanCode) && !searchBox.isSelected()) {
             this.close();
             return true;
         }
-        if (hoveredSlot != null) {
+        if (hoveredSlot != null && !Screen.hasShiftDown()) {
             if (hoveredSlot instanceof InventoryItemComponent && this.client.options.swapHandsKey.matchesKey(keyCode, scanCode)) {
                 if (searchBox.isSelected()) {
                     unfocusSearch.run();
@@ -300,6 +303,17 @@ public class InventoryScreen extends ComponentScreen {
                     setSlot(hoveredSlot.getStack(), i);
                     return true;
                 }
+            }
+        }
+        if (client.options.dropKey.matchesKey(keyCode, scanCode)) {
+            if (selectedStack != null) {
+                client.interactionManager.dropCreativeStack(getSelectedStack());
+                setSelectedStack(null);
+                return true;
+            }
+            if (hoveredSlot != null) {
+                client.interactionManager.dropCreativeStack(hoveredSlot.getStack());
+                return true;
             }
         }
         if (keyCode == GLFW.GLFW_KEY_LEFT_SHIFT || keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) {

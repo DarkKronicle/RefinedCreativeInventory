@@ -1,4 +1,11 @@
 {
   "rci.button.vanilla": "Open Vanilla",
-  "rci.group.other": "Other"
+  "rci.button.settings": "Settings",
+  "rci.group.other": "Other",
+
+  "rci.inventory.inventory": "Inventory",
+  "rci.inventory.hotbar": "Hotbar",
+
+  "rci.option.inventorysplit": "Always Display Inventory",
+  "rci.option.info.inventorysplit": "Whether or not &6the survival inventory is always displayed&r on the right-hand side of the screen."
 }
