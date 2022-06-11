@@ -12,6 +12,9 @@
   "entrypoints": {
     "client": [
       "io.github.darkkronicle.refinedcreativeinventory.RefinedCreativeInventory"
+    ],
+    "modmenu": [
+      "io.github.darkkronicle.refinedcreativeinventory.config.ModMenuImpl"
     ]
   },
   "mixins": [

@@ -26,6 +26,8 @@ dependencies {
     modImplementation "com.github.DarkKronicle:DarkKore:main-SNAPSHOT"
     include "com.github.DarkKronicle:KommandLib:${project.kommandlib_version}"
 
+    modCompileOnly "io.github.prospector:modmenu:1.16.8"
+
 }
 
 processResources {

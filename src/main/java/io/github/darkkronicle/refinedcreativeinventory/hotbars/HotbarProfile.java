@@ -20,7 +20,7 @@ public class HotbarProfile implements Saveable {
     @Setter @Getter private int mainOne = -1;
     @Setter @Getter private int mainTwo = -1;
 
-    @Getter private final StringOption name = new StringOption("name", "rci.profileeditor.name", "rci.profileeditor.info.name", "Profile");
+    @Getter private final StringOption name = new StringOption("name", "rci.profileeditor.name", "rci.profileeditor.info.name", "Custom Hotbar Profile");
     @Getter private final StringOption stack = new StringOption(
             "item",
             "rci.profileeditor.item",

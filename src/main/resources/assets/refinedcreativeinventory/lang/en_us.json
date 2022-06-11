@@ -1,8 +1,12 @@
 {
   "rci.optiontype.info.flag": "Type a list of flags, separated by commas, here",
+  "rci.optiontype.info.item": "Type a minecraft item here",
   "rci.button.vanilla": "Open Vanilla",
   "rci.button.settings": "Settings",
   "rci.group.other": "Other",
+  "rci.itemedit.add": "Save",
+  "rci.itemedit.delete": "&cDelete",
+  "rci.tabedit.delete": "&cDelete",
 
   "rci.inventory.inventory": "Inventory",
   "rci.inventory.hotbar": "Hotbar",
@@ -28,7 +32,21 @@
 
   "rci.itemedit.flags": "Custom Flags",
   "rci.itemedit.info.flags": "The &6Custom Flags&r associated with this item\n&f&oFlags are 'tags' that RCI can use to group items quickly and efficiently",
-  "rci.itemedit.add": "Save",
-  "rci.itemedit.delete": "Delete",
-  "rci.tabedit.delete": "Delete"
+
+  "rci.tabeditor.name": "Name",
+  "rci.tabeditor.info.name": "The &6name of the tab",
+  "rci.tabeditor.item": "Icon",
+  "rci.tabeditor.info.item": "The &6item that will be used&r as the icon for the tab&r",
+  "rci.tabeditor.basicsearch": "Basic Search",
+  "rci.tabeditor.info.basicsearch": "Whether a more &6human-readable search string&r is used\nWhen disabled, Konstruct strings are used instead",
+  "rci.tabeditor.search": "Search String",
+  "rci.tabeditor.info.search": "The &6search string&r used to associate items with this tab\nWhen &6Basic Search&r is enabled, you can search for a custom flag (you can configure these in RCI) with &aflag:<flag>&r, group (vanilla inventory tab) &bgroup:<group&r, vanilla tag &etag:<tag>&r, and name &dname:<name>&r or just start typing the name.\n Otherwise, Konstruct is used",
+  "rci.tabeditor.order": "Order",
+  "rci.tabeditor.info.order": "The &6position&r that this tab will have on the creative menu\nSmaller numbers are &6higher up&r on the list",
+
+  "rci.profileeditor.name": "Name",
+  "rci.profileeditor.info.name": "The &6name of this profile&r",
+  "rci.profileeditor.item": "Icon",
+  "rci.profileeditor.info.item": "The &6item that will be used&r as the icon for the hotbar profile"
+
 }

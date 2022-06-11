@@ -49,7 +49,7 @@ public class HotbarHolderComponent extends ListComponent {
                         return true;
                     }
                     if (button == 1) {
-                        MinecraftClient.getInstance().setScreen(new HotbarProfileEditor(parent, profile));
+                        MinecraftClient.getInstance().setScreen(new HotbarProfileEditor(inventory, profile));
                     }
                     return false;
                 }
