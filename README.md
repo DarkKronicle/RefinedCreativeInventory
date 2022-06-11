@@ -4,6 +4,8 @@ RefinedCreativeInventory (RCI) is an advanced creative inventory mod for minecra
 
 Feel free to join the [discord](https://discord.gg/WnaE3uZxDA) if you have any questions!
 
+This mod **requires [DarkKore](https://github.com/DarkKronicle/DarkKore)**
+
 ## Features
 
 *When in doubt, right click on something to see if you can configure it more!
