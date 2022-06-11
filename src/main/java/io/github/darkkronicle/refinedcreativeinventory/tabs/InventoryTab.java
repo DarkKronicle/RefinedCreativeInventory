@@ -63,11 +63,11 @@ public class InventoryTab implements ItemTab {
         rows.setComponentYPad(0);
         rows.addComponent(new TextComponent(screen, StringUtil.translateToText("rci.inventory.inventory")));
         ListComponent other = new ListComponent(screen, -1, -1, false);
-        other.addComponent(new IconInventoryComponent(screen, new Identifier("textures/" + PlayerScreenHandler.EMPTY_OFFHAND_ARMOR_SLOT.getPath() + ".png"), 40).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
         other.addComponent(new ArmorInventoryComponent(screen, EquipmentSlot.HEAD, new Identifier("textures/" + PlayerScreenHandler.EMPTY_HELMET_SLOT_TEXTURE.getPath() + ".png"), 39).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
         other.addComponent(new ArmorInventoryComponent(screen, EquipmentSlot.CHEST, new Identifier("textures/" + PlayerScreenHandler.EMPTY_CHESTPLATE_SLOT_TEXTURE.getPath() + ".png"), 38).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
         other.addComponent(new ArmorInventoryComponent(screen, EquipmentSlot.LEGS, new Identifier("textures/" + PlayerScreenHandler.EMPTY_LEGGINGS_SLOT_TEXTURE.getPath() + ".png"), 37).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
         other.addComponent(new ArmorInventoryComponent(screen, EquipmentSlot.FEET, new Identifier("textures/" + PlayerScreenHandler.EMPTY_BOOTS_SLOT_TEXTURE.getPath() + ".png"), 36).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
+        other.addComponent(new IconInventoryComponent(screen, new Identifier("textures/" + PlayerScreenHandler.EMPTY_OFFHAND_ARMOR_SLOT.getPath() + ".png"), 40).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
         rows.addComponent(other);
         for (int row = 1; row <= 3; row++) {
             ListComponent columns = new ListComponent(screen, -1, -1, false);
@@ -91,6 +91,7 @@ public class InventoryTab implements ItemTab {
             public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
                 if (Screen.hasShiftDown()) {
                     MinecraftClient client = MinecraftClient.getInstance();
+                    client.player.getInventory().clear();
                     for (int i = 0; i < client.player.playerScreenHandler.getStacks().size(); ++i) {
                         client.interactionManager.clickCreativeStack(ItemStack.EMPTY, i);
                     }

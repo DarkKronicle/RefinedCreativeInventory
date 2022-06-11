@@ -1,4 +1,5 @@
 {
+  "rci.optiontype.info.flag": "Type a list of flags, separated by commas, here",
   "rci.button.vanilla": "Open Vanilla",
   "rci.button.settings": "Settings",
   "rci.group.other": "Other",
@@ -7,5 +8,27 @@
   "rci.inventory.hotbar": "Hotbar",
 
   "rci.option.inventorysplit": "Always Display Inventory",
-  "rci.option.info.inventorysplit": "Whether or not &6the survival inventory is always displayed&r on the right-hand side of the screen."
+  "rci.option.info.inventorysplit": "Whether or not &6the survival inventory&r is always displayed on the right-hand side of the screen.\nWhen turned off, the survival inventory can still be accessed by clicking its dedicated tab",
+  "rci.option.hotbarsplit": "Always Display Hotbar",
+  "rci.option.info.hotbarsplit": "Whether or not &6saved hotbars&r are always displayed on the right-hand side of the screen.\nWhen turned off, saved inventories can still be access by clicking its dedicated tab",
+  "rci.option.switchhotbars": "Switch Hotbar Hotkey",
+  "rci.option.info.switchhotbars":"The hotkey used to &6cycle between saved hotbars",
+  "rci.option.nexthotbar": "Next Hotbar Hotkey",
+  "rci.option.info.nexthotbar":"The hotkey used to &6switch to the &bnext saved hotbar",
+  "rci.option.previoushotbar": "Previous Hotbar Hotkey",
+  "rci.option.info.previoushotbar":"The hotkey used to &6switch to the &cprevious saved hotbar",
+  "rci.option.mainbackground": "Background Color",
+  "rci.option.info.mainbackground": "The &6background color&r of the creative inventory",
+  "rci.option.componentbackground": "Foreground Color",
+  "rci.option.info.componentbackground": "The &6foreground&r color of the creative inventory",
+  "rci.option.componentoutline": "Foreground Outline",
+  "rci.option.info.componentoutline": "The color of the &6outlines of the individual sections&r in the creative inventory",
+  "rci.option.slotoutline": "Slot Outline",
+  "rci.option.info.slotoutline": "The color of the &6outlines of inventory slots&r, such as hotbar slots",
+
+  "rci.itemedit.flags": "Custom Flags",
+  "rci.itemedit.info.flags": "The &6Custom Flags&r associated with this item\n&f&oFlags are 'tags' that RCI can use to group items quickly and efficiently",
+  "rci.itemedit.add": "Save",
+  "rci.itemedit.delete": "Delete",
+  "rci.tabedit.delete": "Delete"
 }

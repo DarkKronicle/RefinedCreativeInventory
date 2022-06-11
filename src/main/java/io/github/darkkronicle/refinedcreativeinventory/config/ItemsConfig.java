@@ -106,13 +106,19 @@ public class ItemsConfig extends ModConfig {
     }
 
     public static InventoryItem loadInventoryItem(ConfigObject nest, boolean add) {
+        return loadInventoryItem(nest, add, true);
+    }
+
+    public static InventoryItem loadInventoryItem(ConfigObject nest, boolean add, boolean setData) {
         ItemStack stack = ItemSerializer.deserialize(nest);
         List<String> flags = nest.get("flags");
         InventoryItem item = add ? ItemHolder.getInstance().getOrCreate(stack) : ItemHolder.getInstance().get(stack).orElseGet(() -> new BasicInventoryItem(stack));
-        for (String flag : flags) {
-            item.addFlag(flag);
+        if (setData) {
+            for (String flag : flags) {
+                item.addFlag(flag);
+            }
+            item.setCustom(nest.get("custom"));
         }
-        item.setCustom(nest.get("custom"));
         return item;
     }
 

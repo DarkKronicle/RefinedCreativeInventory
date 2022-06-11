@@ -49,7 +49,6 @@ public class BasicInventoryItem implements InventoryItem {
     public List<Component> getOptionComponents(Screen parent, int width) {
         List<Component> components = new ArrayList<>();
         FlagOptionComponent flags = FlagOptionComponent.of(parent, this, width);
-        flags.setOutlineColor(new Color(100, 100, 100, 100));
         components.add(flags);
         return components;
     }

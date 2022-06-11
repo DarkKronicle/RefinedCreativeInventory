@@ -74,7 +74,7 @@ public class SavedHotbar implements Saveable {
                 items.add(null);
                 continue;
             }
-            InventoryItem item = ItemsConfig.loadInventoryItem(obj, false);
+            InventoryItem item = ItemsConfig.loadInventoryItem(obj, false, false);
             items.add(item);
         }
         uuid = UUID.fromString(object.get("uuid"));

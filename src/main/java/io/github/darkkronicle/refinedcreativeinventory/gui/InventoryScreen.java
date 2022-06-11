@@ -20,7 +20,7 @@ import io.github.darkkronicle.refinedcreativeinventory.gui.components.ItemsCompo
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.RefinedItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarHolder;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.gui.HotbarHolderComponent;
-import io.github.darkkronicle.refinedcreativeinventory.search.tabeditor.TabEditorScreen;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.tabeditor.TabEditorScreen;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.CustomTab;
 import io.github.darkkronicle.refinedcreativeinventory.tabs.InventoryTab;
@@ -76,36 +76,66 @@ public class InventoryScreen extends ComponentScreen {
         InventoryScreen.tab = tab;
     }
 
-    public static Color getOutlineColor() {
-        return new Color(200, 200, 200, 255);
+    public static Color getComponentOutlineColor() {
+        return CreativeInventoryConfig.getInstance().getComponentOutlineColor().getValue();
     }
 
     public static Color getSlotOutlineColor() {
-        return new Color(200, 200, 200, 150);
+        return CreativeInventoryConfig.getInstance().getSlotOutlineColor().getValue();
+    }
+
+    public static Color getComponentBackgroundColor() {
+        return CreativeInventoryConfig.getInstance().getComponentBackgroundColor().getValue();
+    }
+
+    public static Color getMainBackground() {
+        return CreativeInventoryConfig.getInstance().getMainBackgroundColor().getValue();
     }
 
     @Override
     public void initImpl() {
+        if (!CreativeInventoryConfig.getInstance().getPersistentSearch().getValue()) {
+            lastSearch = "";
+        }
         Dimensions screen = Dimensions.getScreen();
 
         boolean showInventory = CreativeInventoryConfig.getInstance().getInventorySplit().getValue();
+        boolean showHotbar = CreativeInventoryConfig.getInstance().getHotbarSplit().getValue();
         int mainWidth = screen.getWidth() - 34;
         int itemsWidth = mainWidth;
 
+        // Ugh this is jank. Basically want to set width to the maximum, but each one can be toggled...
+        // TODO rewrite how screen is built
+        ListComponent inventory = null;
         if (showInventory) {
-            ListComponent inventory = new ListComponent(this, -1, -1, true);
+            inventory = new ListComponent(this, -1, -1, true);
             for (Component component : InventoryTab.getInventoryComponents(this, screen)) {
                 inventory.addComponent(component);
             }
-
+            if (!showHotbar) {
+                addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor()));
+            }
+            itemsWidth = mainWidth - inventory.getWidth() - 2;
+        }
+        if (showHotbar) {
             HotbarHolderComponent hotbarHolder = new HotbarHolderComponent(this, HotbarHolder.getInstance(), -1, -1);
-            addComponent(new PositionedComponent(this,
-                    new ScrollComponent(this, hotbarHolder, hotbarHolder.getWidth(), screen.getHeight() - 102 - inventory.getHeight(), true),
-                    24 + mainWidth - hotbarHolder.getWidth(), 40 + inventory.getHeight() + 2).setOutlineColor(getOutlineColor())
-            );
-            inventory.setWidth(hotbarHolder.getWidth());
-            itemsWidth = itemsWidth - Math.max(inventory.getWidth(), hotbarHolder.getWidth()) - 2;
-            addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(getOutlineColor()));
+            if (showInventory) {
+                addComponent(new PositionedComponent(this,
+                        new ScrollComponent(this, hotbarHolder, hotbarHolder.getWidth(), screen.getHeight() - 102 - inventory.getHeight(), true),
+                        24 + mainWidth - hotbarHolder.getWidth(), 40 + inventory.getHeight() + 2).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor())
+                );
+                inventory.setWidth(hotbarHolder.getWidth());
+                itemsWidth = mainWidth - Math.max(inventory.getWidth(), hotbarHolder.getWidth()) - 2;
+                addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor()));
+            } else {
+                addComponent(new PositionedComponent(this,
+                        new ScrollComponent(this, hotbarHolder, hotbarHolder.getWidth(), screen.getHeight() - 100, true),
+                        24 + mainWidth - hotbarHolder.getWidth(), 40).setOutlineColor(getComponentOutlineColor())
+                );
+                itemsWidth = mainWidth - hotbarHolder.getWidth() - 2;
+            }
+        } else if (showInventory) {
+            addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor()));
         }
 
         int mainX = 24;
@@ -118,13 +148,13 @@ public class InventoryScreen extends ComponentScreen {
 
         addComponent(new PositionedComponent(this,
                 new ScrollComponent(this, tabs, 22, screen.getHeight() - 100, true
-        ), 3, 40, -1, -1).setOutlineColor(getOutlineColor()));
+        ), 3, 40, -1, -1).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor()));
 
         items = new ItemsComponent(this, new Dimensions(itemsWidth, screen.getHeight() - 100), itemsWidth);
         items.setItems(lastSearch);
         addComponent(new PositionedComponent(this,
                 new ScrollComponent(this, items, itemsWidth, screen.getHeight() - 100, true
-        ), mainX, 40, -1, -1).setOutlineColor(getOutlineColor()));
+        ), mainX, 40, -1, -1).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor()));
 
         for (ItemTab tab : TabHolder.getInstance().getTabs()) {
             BasicComponent icon = tab.getIcon(this);
@@ -166,7 +196,7 @@ public class InventoryScreen extends ComponentScreen {
         addComponent(new PositionedComponent(
                 this, hotbar, mainX, screen.getHeight() - 58, hotbar.getBoundingBox().width(), hotbar.getBoundingBox().height()
         ));
-        hotbar.setOutlineColor(getOutlineColor());
+        hotbar.setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor());
 
         searchBox = new TextBoxComponent(this, lastSearch, mainWidth, 14, this::onChange);
         searchBox.setBackgroundColor(new Color(0, 0, 0, 255));
@@ -270,7 +300,8 @@ public class InventoryScreen extends ComponentScreen {
 
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
-        super.render(matrices, mouseX, mouseY, partialTicks);
+        RenderUtil.drawRectangle(matrices, 0, 0, this.width, this.height, getMainBackground().color());
+        renderComponents(matrices, mouseX, mouseY);
         if (selectedStack != null) {
             RenderUtil.drawItem(matrices, selectedStack, mouseX - 8, mouseY - 8, true, 50);
         }

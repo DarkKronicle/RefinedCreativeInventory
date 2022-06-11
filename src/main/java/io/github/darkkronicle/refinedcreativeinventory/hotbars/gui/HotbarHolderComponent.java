@@ -1,6 +1,5 @@
 package io.github.darkkronicle.refinedcreativeinventory.hotbars.gui;
 
-import io.github.darkkronicle.darkkore.gui.components.BasicComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.IconButtonComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.gui.components.impl.TextComponent;
@@ -11,14 +10,9 @@ import io.github.darkkronicle.refinedcreativeinventory.RefinedCreativeInventory;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarHolder;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarProfile;
-import io.github.darkkronicle.refinedcreativeinventory.search.tabeditor.TabEditorScreen;
-import io.github.darkkronicle.refinedcreativeinventory.tabs.CustomTab;
-import io.github.darkkronicle.refinedcreativeinventory.tabs.TabHolder;
 import lombok.Getter;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 

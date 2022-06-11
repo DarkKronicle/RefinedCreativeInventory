@@ -12,7 +12,7 @@ import io.github.darkkronicle.darkkore.gui.components.impl.ItemComponent;
 import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.FluidText;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
-import io.github.darkkronicle.refinedcreativeinventory.search.tabeditor.TabEditorScreen;
+import io.github.darkkronicle.refinedcreativeinventory.tabs.tabeditor.TabEditorScreen;
 import io.github.darkkronicle.refinedcreativeinventory.search.BasicItemSearch;
 import io.github.darkkronicle.refinedcreativeinventory.search.KonstructSearch;
 import lombok.Getter;
@@ -42,11 +42,11 @@ public class CustomTab extends FilterTab {
             "item",
             "rci.tabeditor.item",
             "rci.tabeditor.info.item", "minecraft:stone",
-            "rci.tabeditor.itemtype", string -> Registry.ITEM.containsId(new Identifier(string))
+            "rci.optiontype.info.item", string -> Registry.ITEM.containsId(new Identifier(string))
     );
 
     @Getter
-    private final BooleanOption basicSearch = new BooleanOption("basicSearch", "rci.tabeditor.basicSearch", "rci.tabeditor.info.basicSearch", true);
+    private final BooleanOption basicSearch = new BooleanOption("basicSearch", "rci.tabeditor.basicsearch", "rci.tabeditor.info.basicsearch", true);
 
     @Getter
     private final StringOption searchOption = new StringOption("search", "rci.tabeditor.search", "rci.tabeditor.info.search", "flag:util") {

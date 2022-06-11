@@ -25,7 +25,7 @@ public class HotbarProfile implements Saveable {
             "item",
             "rci.profileeditor.item",
             "rci.profileeditor.info.item", "minecraft:stone",
-            "rci.profileeditor.itemtype", string -> Registry.ITEM.containsId(new Identifier(string))
+            "rci.option.info.item", string -> Registry.ITEM.containsId(new Identifier(string))
     );
 
     public HotbarProfile() {

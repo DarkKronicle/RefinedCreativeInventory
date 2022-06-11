@@ -44,13 +44,14 @@ public class HotbarComponent extends ListComponent {
                 return false;
             }
         };
+        icon.setOutlineColor(InventoryScreen.getSlotOutlineColor());
         icon.setShaderColor(new Color(200, 100, 100, 255));
         icon.setLeftPadding(0);
         icon.setRightPadding(0);
         icon.setTopPadding(0);
         icon.setBottomPadding(0);
         for (int i = 0; i < 9; i++) {
-            addComponent(new RefinedInventoryItemComponent(parent, i));
+            addComponent(new RefinedInventoryItemComponent(parent, i).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
         }
         addComponent(icon);
     }
