@@ -20,11 +20,8 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modCompileOnly "io.github.prospector:modmenu:1.16.8"
-    modImplementation "com.github.DarkKronicle:KommandLib:${project.kommandlib_version}"
     modImplementation "com.github.DarkKronicle:DarkKore:main-SNAPSHOT"
-    include "com.github.DarkKronicle:KommandLib:${project.kommandlib_version}"
 
     modCompileOnly "io.github.prospector:modmenu:1.16.8"
 

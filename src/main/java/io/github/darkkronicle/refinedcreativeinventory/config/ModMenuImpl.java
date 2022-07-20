@@ -7,6 +7,6 @@ public class ModMenuImpl implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> new CreativeInventoryConfigScreen();
+        return parent -> CreativeInventoryConfig.getInstance().getScreen();
     }
 }

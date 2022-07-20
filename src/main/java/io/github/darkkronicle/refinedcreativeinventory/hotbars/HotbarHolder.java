@@ -1,7 +1,6 @@
 package io.github.darkkronicle.refinedcreativeinventory.hotbars;
 
 import lombok.Getter;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 
 import java.util.ArrayList;
 import java.util.List;

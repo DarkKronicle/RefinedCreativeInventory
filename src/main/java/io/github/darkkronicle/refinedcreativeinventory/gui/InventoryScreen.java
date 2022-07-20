@@ -13,7 +13,6 @@ import io.github.darkkronicle.darkkore.util.StringUtil;
 import io.github.darkkronicle.darkkore.util.render.RenderUtil;
 import io.github.darkkronicle.refinedcreativeinventory.RefinedCreativeInventory;
 import io.github.darkkronicle.refinedcreativeinventory.config.CreativeInventoryConfig;
-import io.github.darkkronicle.refinedcreativeinventory.config.CreativeInventoryConfigScreen;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInventoryItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.HotbarComponent;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.ItemsComponent;
@@ -248,7 +247,7 @@ public class InventoryScreen extends ComponentScreen {
                 StringUtil.translateToText("rci.button.settings"),
                 new Color(100, 100, 100, 100),
                 new Color(150, 150, 150, 150), button -> {
-            client.setScreen(new CreativeInventoryConfigScreen());
+            client.setScreen(CreativeInventoryConfig.getInstance().getScreen());
         });
         vanilla.setLeftPadding(2);
         addComponent(new PositionedComponent(
