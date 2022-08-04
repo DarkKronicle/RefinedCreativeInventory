@@ -23,6 +23,7 @@
   "depends": {
     "fabricloader": ">=0.12.2",
     "fabric": "*",
-    "minecraft": "1.19"
+    "minecraft": "1.19",
+    "darkkore": ">=0.1.1"
   }
 }
