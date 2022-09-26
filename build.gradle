@@ -5,6 +5,8 @@ plugins {
     id 'io.github.juuxel.loom-quiltflower' version '1.6.0'
 }
 
+apply from: 'https://raw.githubusercontent.com/DarkKronicle/GradleScripts/main/gradle/publish.gradle'
+
 version = project.mod_version
 group = project.maven_group
 
