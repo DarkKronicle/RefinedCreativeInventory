@@ -11,6 +11,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
+      - name: Change wrapper permissions
+        run: chmod +x ./gradlew
       - name: Upload to Discord
         run: ./gradlew discord --stacktrace
         if: |
