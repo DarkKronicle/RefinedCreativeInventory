@@ -47,7 +47,9 @@ public class CreativeInventoryConfig extends ModConfig {
     @Getter private final ColorOption slotOutlineColor = new ColorOption("slotOutline", "rci.option.slotoutline", "rci.option.info.mainbackground",
             new Color(200, 200, 200, 34));
 
-    private final List<Option<?>> options = ImmutableList.of(inventorySplit, hotbarSplit, persistentSearch, switchHotbars, nextHotbar, previousHotbar, mainBackgroundColor, componentBackgroundColor, componentOutlineColor, slotOutlineColor);
+    @Getter private final HotkeySettingsOption openSelector = new HotkeySettingsOption("openSelector", "rci.option.openselector", "rci.option.info.openselector", new HotkeySettings(false, false, true, List.of(GLFW.GLFW_MOUSE_BUTTON_MIDDLE), PlayerContextCheck.getDefault()));
+
+    private final List<Option<?>> options = ImmutableList.of(inventorySplit, hotbarSplit, persistentSearch, switchHotbars, nextHotbar, previousHotbar, mainBackgroundColor, componentBackgroundColor, componentOutlineColor, slotOutlineColor, openSelector);
 
     @Override
     public File getFile() {

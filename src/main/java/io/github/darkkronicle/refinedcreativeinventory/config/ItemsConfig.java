@@ -1,30 +1,45 @@
 package io.github.darkkronicle.refinedcreativeinventory.config;
 
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import io.github.darkkronicle.darkkore.DarkKore;
 import io.github.darkkronicle.darkkore.config.ModConfig;
 import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
+import io.github.darkkronicle.darkkore.config.impl.JsonConfigObject;
 import io.github.darkkronicle.darkkore.config.impl.JsonFileObject;
 import io.github.darkkronicle.darkkore.config.options.Option;
 import io.github.darkkronicle.darkkore.util.FileUtil;
+import io.github.darkkronicle.darkkore.util.JsonUtil;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
+import lombok.Getter;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class ItemsConfig extends ModConfig {
 
     private final static ItemsConfig INSTANCE = new ItemsConfig();
+
+    public static final int LATEST_VERSION = 2;
+
+    @Getter
+    private int currentVersion = 1;
+
+    private boolean shouldSetFlags = false;
 
     public static ItemsConfig getInstance() {
         return INSTANCE;
@@ -43,12 +58,13 @@ public class ItemsConfig extends ModConfig {
     @Override
     public void setupFileConfig() {
         if (!getFile().exists()) {
+            shouldSetFlags = true;
             try {
                 getFile().getParentFile().mkdirs();
                 getFile().createNewFile();
                 try {
-                    try(OutputStream outputStream = new FileOutputStream(getFile())) {
-                        IOUtils.copy( FileUtil.getResource("default_items.json"), outputStream);
+                    try (OutputStream outputStream = new FileOutputStream(getFile())) {
+                        IOUtils.copy(FileUtil.getResource("default_items.json"), outputStream);
                     }
                 } catch (URISyntaxException exception) {
                     DarkKore.LOGGER.error("Couldn't copy over default_items.json!", exception);
@@ -76,8 +92,52 @@ public class ItemsConfig extends ModConfig {
             }
         }
         config.getConfig().set("items", confs);
+        config.getConfig().set("version", LATEST_VERSION);
         config.save();
         config.close();
+    }
+
+    private void setDefaultFlags() {
+        try {
+            InputStream stream = FileUtil.getResource("default_flags.json");
+            JsonElement element = JsonParser.parseReader(JsonUtil.GSON.newJsonReader(new InputStreamReader(stream, StandardCharsets.UTF_8)));
+            if (!element.isJsonObject()) {
+                return;
+            }
+            JsonConfigObject obj = new JsonConfigObject(element.getAsJsonObject());
+            loadFlags(obj);
+        } catch (IOException | URISyntaxException e) {
+            DarkKore.LOGGER.error("Couldn't set up default_flags.json!", e);
+            return;
+        }
+    }
+
+    private void loadFlags(ConfigObject config) {
+        for (Map.Entry<String, Object> entry : config.getValues().entrySet()) {
+            if (!(entry.getValue() instanceof List<?>)) {
+                continue;
+            }
+            String flag = entry.getKey();
+
+            // This is a bit scary, but we should be in a try catch
+            List<String> list = (List<String>) entry.getValue();
+            Item defaultItem = Registry.ITEM.get(Registry.ITEM.getDefaultId());
+            for (String value : list) {
+                // TODO this may need to be delayed?
+                if (!value.contains(":")) {
+                    value = "minecraft:" + value;
+                }
+                value = value.toLowerCase(Locale.ROOT).strip();
+                Identifier identifier = Identifier.splitOn(value, ':');
+                Item item = Registry.ITEM.get(identifier);
+                if (item == defaultItem) {
+                    DarkKore.LOGGER.info("Couldn't find item " + value);
+                }
+
+                InventoryItem stack = ItemHolder.getInstance().getOrCreate(new ItemStack(item));
+                stack.addFlag(flag);
+            }
+        }
     }
 
     @Override
@@ -88,13 +148,16 @@ public class ItemsConfig extends ModConfig {
             config.close();
             return;
         }
+        currentVersion = ((Number) config.getConfig().getOptional("version").orElse(1)).intValue();
         List<ConfigObject> confs = config.getConfig().get("items");
-        if (confs == null) {
-            config.close();
-            return;
+        if (confs != null) {
+            for (ConfigObject c : confs) {
+                loadInventoryItem(c, true);
+            }
         }
-        for (ConfigObject c : confs) {
-            loadInventoryItem(c, true);
+        if (currentVersion < 2 || shouldSetFlags) {
+            shouldSetFlags = false;
+            setDefaultFlags();
         }
         config.close();
     }
@@ -112,7 +175,8 @@ public class ItemsConfig extends ModConfig {
     public static InventoryItem loadInventoryItem(ConfigObject nest, boolean add, boolean setData) {
         ItemStack stack = ItemSerializer.deserialize(nest);
         List<String> flags = nest.get("flags");
-        InventoryItem item = add ? ItemHolder.getInstance().getOrCreate(stack) : ItemHolder.getInstance().get(stack).orElseGet(() -> new BasicInventoryItem(stack));
+        InventoryItem item = add ? ItemHolder.getInstance().getOrCreate(stack)
+                                 : ItemHolder.getInstance().get(stack).orElseGet(() -> new BasicInventoryItem(stack));
         if (setData) {
             for (String flag : flags) {
                 item.addFlag(flag);

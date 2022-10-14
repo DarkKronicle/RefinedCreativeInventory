@@ -261,12 +261,17 @@ public class InventoryScreen extends ComponentScreen {
     }
 
     public void setSlot(@Nullable ItemStack item, int slot) {
+        setSlot(client, item, slot);
+    }
+
+    public static void setSlot(MinecraftClient client, @Nullable ItemStack item, int slot) {
         if (item == null) {
             item = blank;
         }
         client.player.getInventory().setStack(slot, item);
         client.interactionManager.clickCreativeStack(item, client.player.playerScreenHandler.getSlotIndex(client.player.getInventory(), slot).getAsInt());
     }
+
 
     public CustomInventoryItemComponent createItemComponent(InventoryItem item) {
         return new RefinedItemComponent(this, item);

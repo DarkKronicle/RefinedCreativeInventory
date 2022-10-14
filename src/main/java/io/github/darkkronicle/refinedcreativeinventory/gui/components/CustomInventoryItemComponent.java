@@ -82,7 +82,7 @@ public class CustomInventoryItemComponent extends ItemComponent {
 
     @Override
     public void postRender(MatrixStack matrices, PositionedRectangle renderBounds, int x, int y, int mouseX, int mouseY) {
-        if (this.isHovered() && getStack() != null && !getStack().getItem().equals(Items.AIR)) {
+        if (this.isHovered() && hoverComponent != null && getStack() != null && !getStack().getItem().equals(Items.AIR)) {
             y = y + 18;
             Dimensions screen = Dimensions.getScreen();
             Rectangle bounds = hoverComponent.getBoundingBox();

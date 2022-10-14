@@ -32,5 +32,5 @@ public interface InventoryItem extends Comparable<InventoryItem> {
         return getStack().getName().getString().compareTo(o.getStack().getName().getString());
     }
 
-    void addFlag(String flags);
+    void addFlag(String flag);
 }

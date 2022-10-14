@@ -8,6 +8,8 @@ import io.github.darkkronicle.darkkore.intialization.profiles.PlayerContextCheck
 import io.github.darkkronicle.refinedcreativeinventory.config.CreativeInventoryConfig;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarHolder;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarProfile;
+import io.github.darkkronicle.refinedcreativeinventory.itemselector.InventoryItemSwitcherScreen;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.world.GameMode;
 
 import java.util.ArrayList;
@@ -44,6 +46,15 @@ public class InitHandler implements Initializer {
                     HotbarProfile profile = HotbarHolder.getInstance().getCurrent();
                     profile.cycle(false);
                     profile.getCurrent().apply();
+                }
+            }));
+            hotkeys.add(new BasicHotkey(CreativeInventoryConfig.getInstance().getOpenSelector().getValue(), () -> {
+                if (new PlayerContextCheck(true, null, GameMode.CREATIVE, null).check()) {
+                    MinecraftClient client = MinecraftClient.getInstance();
+                    int selectedSlot = client.player.getInventory().selectedSlot;
+                    if (!client.player.getInventory().getStack(selectedSlot).isEmpty()) {
+                        client.setScreen(new InventoryItemSwitcherScreen(selectedSlot));
+                    }
                 }
             }));
             return hotkeys;
