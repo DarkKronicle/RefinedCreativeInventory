@@ -23,7 +23,7 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modCompileOnly "io.github.prospector:modmenu:1.16.8"
-    modImplementation "com.github.DarkKronicle:DarkKore:main-SNAPSHOT"
+    modImplementation "com.github.DarkKronicle:DarkKore:${project.darkkore_version}"
 
     modCompileOnly "io.github.prospector:modmenu:1.16.8"
 
