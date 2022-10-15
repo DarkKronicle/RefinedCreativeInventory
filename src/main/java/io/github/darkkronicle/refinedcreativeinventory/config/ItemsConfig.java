@@ -32,6 +32,8 @@ import java.util.Map;
 
 public class ItemsConfig extends ModConfig {
 
+    private final static Item DEFAULT_ITEM = Registry.ITEM.get(Registry.ITEM.getDefaultId());
+
     private final static ItemsConfig INSTANCE = new ItemsConfig();
 
     public static final int LATEST_VERSION = 2;
@@ -112,8 +114,77 @@ public class ItemsConfig extends ModConfig {
         }
     }
 
+    private void loadCompound(List<ConfigObject> compound) {
+        for (ConfigObject config : compound) {
+            String name = "Name not defined";
+            try {
+                name = config.get("name");
+                loadIndividualCompound(config);
+            } catch (Exception e) {
+                DarkKore.LOGGER.error("Error loading compound " + name + "!", e);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadIndividualCompound(ConfigObject config) {
+        List<?> iterate = (List<?>) config.getOptional("iterate").orElseGet(() -> List.of(""));
+        List<String> replace = (List<String>) config.getOptional("replace").orElseGet(ArrayList::new);
+        String name = config.get("name");
+        loadList(name, replace, iterate, 0);
+    }
+
+    private void loadList(String name, List<String> replace, List<?> values, int depth) {
+        for (Object o : values) {
+            if (o instanceof String string) {
+                String flag = name.replace("{" + depth + "}", string);
+                for (String r : replace) {
+                    r = r.replace("{" + depth + "}", string);
+                    if (!r.contains(":")) {
+                        r = "minecraft:" + r;
+                    }
+                    r = r.toLowerCase(Locale.ROOT).strip();
+                    Identifier identifier = Identifier.splitOn(r, ':');
+                    Item item = Registry.ITEM.get(identifier);
+                    if (item == DEFAULT_ITEM) {
+                        DarkKore.LOGGER.info("Couldn't find item " + r + " (safe to ignore)");
+                        continue;
+                    }
+
+                    InventoryItem stack = ItemHolder.getInstance().getOrCreate(new ItemStack(item));
+                    stack.addFlag(flag);
+                }
+            } else {
+                List<?> list = (List<?>) o;
+                for (Object inner : list) {
+                    if (inner instanceof String string) {
+                        String innerName = name.replace("{" + depth + "}", string);
+                        List<String> newReplace = replace.stream().map(rep -> rep.replace("{" + depth + "}", string)).toList();
+                        for (Object value : values.subList(1, values.size())) {
+                            loadList(innerName, newReplace, (List<?>) value, depth + 1);
+                        }
+                    } else {
+                        loadList(name, replace, (List<?>) inner, depth);
+                    }
+                }
+
+                return;
+
+            }
+        }
+    }
+
     private void loadFlags(ConfigObject config) {
-        for (Map.Entry<String, Object> entry : config.getValues().entrySet()) {
+
+        if (config.contains("compound")) {
+            Object compound = config.get("compound");
+            if (compound instanceof List<?>) {
+                loadCompound((List<ConfigObject>) compound);
+            }
+        }
+        Map<String, Object> values = config.getValues();
+        values.remove("compound");
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
             if (!(entry.getValue() instanceof List<?>)) {
                 continue;
             }
@@ -121,16 +192,15 @@ public class ItemsConfig extends ModConfig {
 
             // This is a bit scary, but we should be in a try catch
             List<String> list = (List<String>) entry.getValue();
-            Item defaultItem = Registry.ITEM.get(Registry.ITEM.getDefaultId());
+
             for (String value : list) {
-                // TODO this may need to be delayed?
                 if (!value.contains(":")) {
                     value = "minecraft:" + value;
                 }
                 value = value.toLowerCase(Locale.ROOT).strip();
                 Identifier identifier = Identifier.splitOn(value, ':');
                 Item item = Registry.ITEM.get(identifier);
-                if (item == defaultItem) {
+                if (item == DEFAULT_ITEM) {
                     DarkKore.LOGGER.info("Couldn't find item " + value);
                 }
 

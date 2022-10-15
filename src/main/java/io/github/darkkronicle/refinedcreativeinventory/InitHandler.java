@@ -9,6 +9,8 @@ import io.github.darkkronicle.refinedcreativeinventory.config.CreativeInventoryC
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarHolder;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarProfile;
 import io.github.darkkronicle.refinedcreativeinventory.itemselector.InventoryItemSwitcherScreen;
+import io.github.darkkronicle.refinedcreativeinventory.itemselector.ItemSwitcherHandler;
+import io.github.darkkronicle.refinedcreativeinventory.itemselector.ItemSwitcherScreen;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.world.GameMode;
 
@@ -55,6 +57,11 @@ public class InitHandler implements Initializer {
                     if (!client.player.getInventory().getStack(selectedSlot).isEmpty()) {
                         client.setScreen(new InventoryItemSwitcherScreen(selectedSlot));
                     }
+                }
+            }, () -> {
+                ItemSwitcherScreen screen = ItemSwitcherHandler.getInstance().getCurrentScreen();
+                if (screen != null) {
+                    screen.forceClose();
                 }
             }));
             return hotkeys;

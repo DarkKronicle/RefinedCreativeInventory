@@ -29,11 +29,22 @@ public class ItemSwitcherScreen extends RadialScreen {
         }
     }
 
+    public void forceClose() {
+        mouseClicked(lastMouseX, lastMouseY, 0);
+        close();
+    }
+
+    @Override
+    public void initImpl() {
+        ItemSwitcherHandler.getInstance().setCurrentScreen(this);
+        super.initImpl();
+    }
+
     protected Component createComponent(InventoryItem item) {
-        CustomInventoryItemComponent component =  new CustomInventoryItemComponent(this, item) {
+        CustomInventoryItemComponent component = new CustomInventoryItemComponent(this, item) {
             @Override
             public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
-                client.setScreen(null);
+                close();
                 callback.accept(item.getStack());
                 return true;
             }
@@ -59,6 +70,7 @@ public class ItemSwitcherScreen extends RadialScreen {
     public void close() {
         super.close();
         callback.accept(null);
+        ItemSwitcherHandler.getInstance().setCurrentScreen(null);
     }
 
     @Override

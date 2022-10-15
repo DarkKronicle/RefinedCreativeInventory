@@ -27,6 +27,9 @@ public class RadialScreen extends ComponentScreen {
 
     private List<List<PositionedComponent>> built;
 
+    protected double lastMouseX = 0;
+    protected double lastMouseY = 0;
+
     public RadialScreen() {
 
     }
@@ -121,11 +124,15 @@ public class RadialScreen extends ComponentScreen {
         PositionedComponent found = getClosestComponent(mouseX, mouseY);
         if (found == null) {
             // This shouldn't happen, but ok
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
             super.render(matrices, mouseX, mouseY, partialTicks);
             return;
         }
         Rectangle bounds = found.getBoundingBox();
-        super.render(matrices, found.getXOffset() + bounds.width() / 2, found.getYOffset() + bounds.height() / 2, partialTicks);
+        lastMouseX = found.getXOffset() + bounds.width() / 2f;
+        lastMouseY = found.getYOffset() + bounds.height() / 2f;
+        super.render(matrices, (int) lastMouseX, (int) lastMouseY, partialTicks);
     }
 
     private void addRadial(int centerX, int centerY, int radius, Radial radial) {

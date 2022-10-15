@@ -3,10 +3,11 @@ package io.github.darkkronicle.refinedcreativeinventory.itemselector;
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.Item;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,11 @@ import java.util.List;
 public class ItemSwitcherHandler {
 
     private final static ItemSwitcherHandler INSTANCE = new ItemSwitcherHandler();
+
+    @Getter
+    @Setter
+    @Nullable
+    private ItemSwitcherScreen currentScreen = null;
 
     public static ItemSwitcherHandler getInstance() {
         return INSTANCE;
@@ -32,12 +38,6 @@ public class ItemSwitcherHandler {
         List<List<InventoryItem>> stacks = new ArrayList<>();
         for (String flag : flags) {
             List<InventoryItem> item = ItemHolder.getInstance().getAllItems().stream().filter(i -> i.getFlags().contains(flag)).toList();
-            if (item.size() > 1) {
-                stacks.add(item);
-            }
-        }
-        for (Identifier tag : tags) {
-            List<InventoryItem> item = ItemHolder.getInstance().getAllItems().stream().filter(i -> i.getTags().contains(tag)).toList();
             if (item.size() > 1) {
                 stacks.add(item);
             }
