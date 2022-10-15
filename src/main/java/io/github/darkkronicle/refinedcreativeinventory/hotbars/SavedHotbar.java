@@ -1,14 +1,20 @@
 package io.github.darkkronicle.refinedcreativeinventory.hotbars;
 
-import io.github.darkkronicle.darkkore.DarkKore;
 import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
+import io.github.darkkronicle.darkkore.config.options.BooleanOption;
+import io.github.darkkronicle.darkkore.config.options.Option;
+import io.github.darkkronicle.darkkore.hotkeys.HotkeySettings;
+import io.github.darkkronicle.darkkore.hotkeys.HotkeySettingsOption;
 import io.github.darkkronicle.darkkore.intialization.Saveable;
+import io.github.darkkronicle.darkkore.intialization.profiles.PlayerContextCheck;
 import io.github.darkkronicle.refinedcreativeinventory.config.ItemsConfig;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +26,18 @@ public class SavedHotbar implements Saveable {
 
     @Getter private List<InventoryItem> items;
     private UUID uuid;
+
+    @Getter
+    private final HotkeySettingsOption hotkey = new HotkeySettingsOption("hotkey", "rci.hotbar.hotkey", "rci.hotbar.hotkey.info",
+            new HotkeySettings(false, false, false, List.of(GLFW.GLFW_KEY_F21), PlayerContextCheck.getDefault())
+    );
+
+    @Getter
+    private final BooleanOption hotkeyActive = new BooleanOption("hotkeyActive", "rci.hotbar.hotkeyactive", "rci.hotbar.hotkeyactive.info", false);
+
+    public List<Option<?>> getOptions() {
+        return List.of(hotkeyActive, hotkey);
+    }
 
     public SavedHotbar() {
         this(new ArrayList<>());
@@ -61,6 +79,9 @@ public class SavedHotbar implements Saveable {
             }
             objects.add(nest);
         }
+        for (Option<?> option : getOptions()) {
+            option.save(object);
+        }
         object.set("uuid", uuid.toString());
         object.set("hotbar", objects);
     }
@@ -76,6 +97,9 @@ public class SavedHotbar implements Saveable {
             }
             InventoryItem item = ItemsConfig.loadInventoryItem(obj, false, false);
             items.add(item);
+        }
+        for (Option<?> option : getOptions()) {
+            option.load(object);
         }
         uuid = UUID.fromString(object.get("uuid"));
         this.items = items;

@@ -65,7 +65,7 @@ public class SavedHotbarComponent extends ListComponent {
                     getOnClick().accept(this);
                     profile.updateHotbars();
                 } else if (button == 1) {
-                    MinecraftClient.getInstance().setScreen(new SavedHotbarEditor(parent, profile, hotbar));
+                    MinecraftClient.getInstance().setScreen(SavedHotbarEditor.getEditor(parent, profile, hotbar));
                 }
                 return true;
             }

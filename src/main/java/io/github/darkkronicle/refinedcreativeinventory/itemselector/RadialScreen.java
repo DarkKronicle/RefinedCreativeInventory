@@ -12,7 +12,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RadialScreen extends ComponentScreen {
+public abstract class RadialScreen extends ComponentScreen {
 
     @Getter
     @Setter
@@ -26,6 +26,8 @@ public class RadialScreen extends ComponentScreen {
     private List<Radial> radials = new ArrayList<>();
 
     private List<List<PositionedComponent>> built;
+
+    private PositionedComponent center;
 
     protected double lastMouseX = 0;
     protected double lastMouseY = 0;
@@ -42,6 +44,8 @@ public class RadialScreen extends ComponentScreen {
 
     @Override
     public void initImpl() {
+        center = getCenterComponent();
+        addComponent(center);
         built = new ArrayList<>();
         int radius = startingRadius;
         if (getRadials().size() == 0) {
@@ -53,6 +57,8 @@ public class RadialScreen extends ComponentScreen {
             radius += increasingRadius;
         }
     }
+
+    public abstract PositionedComponent getCenterComponent();
 
     private PositionedComponent getClosestComponent(float x, float y) {
         // x = rcos(theta)
@@ -85,6 +91,9 @@ public class RadialScreen extends ComponentScreen {
         }
 
         int currentR = startingRadius - increasingRadius / 2;
+        if (r < currentR / 2f) {
+            return center;
+        }
         // Start at the last one
         List<Radial> radialList = getRadials();
         Radial found = getRadials().get(radialList.size() - 1);

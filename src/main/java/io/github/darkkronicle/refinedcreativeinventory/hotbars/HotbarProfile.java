@@ -3,6 +3,7 @@ package io.github.darkkronicle.refinedcreativeinventory.hotbars;
 import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
 import io.github.darkkronicle.darkkore.config.options.Option;
 import io.github.darkkronicle.darkkore.config.options.StringOption;
+import io.github.darkkronicle.darkkore.hotkeys.HotkeyHandler;
 import io.github.darkkronicle.darkkore.intialization.Saveable;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,10 +35,12 @@ public class HotbarProfile implements Saveable {
 
     public void add(SavedHotbar hotbar) {
         hotbars.add(hotbar);
+        HotkeyHandler.getInstance().rebuildHotkeys();
     }
 
     public void remove(SavedHotbar hotbar) {
         hotbars.remove(hotbar);
+        HotkeyHandler.getInstance().rebuildHotkeys();
     }
 
     public void setCurrent(int index) {

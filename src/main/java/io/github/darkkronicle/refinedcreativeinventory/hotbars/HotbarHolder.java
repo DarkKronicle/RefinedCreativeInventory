@@ -1,5 +1,6 @@
 package io.github.darkkronicle.refinedcreativeinventory.hotbars;
 
+import io.github.darkkronicle.darkkore.hotkeys.HotkeyHandler;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class HotbarHolder {
         int index = profiles.indexOf(profile);
         if (index >= 0) {
             setCurrent(index);
+            HotkeyHandler.getInstance().rebuildHotkeys();
         }
     }
 

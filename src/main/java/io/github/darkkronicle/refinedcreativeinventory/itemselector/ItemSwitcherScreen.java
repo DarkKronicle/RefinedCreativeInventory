@@ -1,10 +1,16 @@
 package io.github.darkkronicle.refinedcreativeinventory.itemselector;
 
 import io.github.darkkronicle.darkkore.gui.components.Component;
+import io.github.darkkronicle.darkkore.gui.components.transform.PositionedComponent;
 import io.github.darkkronicle.darkkore.util.Color;
+import io.github.darkkronicle.darkkore.util.PositionedRectangle;
+import io.github.darkkronicle.darkkore.util.Rectangle;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInventoryItemComponent;
+import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
 import java.util.ArrayList;
@@ -15,9 +21,11 @@ import java.util.function.Consumer;
 public class ItemSwitcherScreen extends RadialScreen {
 
     private final Consumer<ItemStack> callback;
+    private final ItemStack startingItem;
 
     public ItemSwitcherScreen(ItemStack startingItem, Consumer<ItemStack> callback) {
         super();
+        this.startingItem = startingItem;
         setBackgroundColor(new Color(0, 0, 0, 0));
         this.callback = callback;
         for (List<InventoryItem> items : ItemSwitcherHandler.getInstance().getStacks(startingItem)) {
@@ -32,6 +40,13 @@ public class ItemSwitcherScreen extends RadialScreen {
     public void forceClose() {
         mouseClicked(lastMouseX, lastMouseY, 0);
         close();
+    }
+
+    @Override
+    public PositionedComponent getCenterComponent() {
+        Component base = createComponent(ItemHolder.getInstance().get(startingItem).orElseGet(() -> new BasicInventoryItem(startingItem)));
+        Rectangle bounds = base.getBoundingBox();
+        return new PositionedComponent(this, base, (width - bounds.width()) / 2, (height - bounds.height()) / 2);
     }
 
     @Override
@@ -59,7 +74,12 @@ public class ItemSwitcherScreen extends RadialScreen {
             }
 
             @Override
-            public void setHover() {
+            public void postRender(MatrixStack matrices, PositionedRectangle renderBounds, int x, int y, int mouseX, int mouseY) {
+                if (hoverComponent == null) {
+                    return;
+                }
+                int centerX = (width - hoverComponent.getWidth()) / 2;
+                super.postRender(matrices, renderBounds, centerX, -18, mouseX, mouseY);
             }
         };
         component.setBackgroundColor(InventoryScreen.getComponentBackgroundColor().withAlpha(200));

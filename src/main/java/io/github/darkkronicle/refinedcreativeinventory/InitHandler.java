@@ -8,6 +8,7 @@ import io.github.darkkronicle.darkkore.intialization.profiles.PlayerContextCheck
 import io.github.darkkronicle.refinedcreativeinventory.config.CreativeInventoryConfig;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarHolder;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarProfile;
+import io.github.darkkronicle.refinedcreativeinventory.hotbars.SavedHotbar;
 import io.github.darkkronicle.refinedcreativeinventory.itemselector.InventoryItemSwitcherScreen;
 import io.github.darkkronicle.refinedcreativeinventory.itemselector.ItemSwitcherHandler;
 import io.github.darkkronicle.refinedcreativeinventory.itemselector.ItemSwitcherScreen;
@@ -23,6 +24,23 @@ public class InitHandler implements Initializer {
 
     @Override
     public void init() {
+        HotkeyHandler.getInstance().add(RefinedCreativeInventory.MOD_ID, "hotbarkeys", () -> {
+            List<Hotkey> hotkeys = new ArrayList<>();
+            List<SavedHotbar> hotbars = HotbarHolder.getInstance().getCurrent().getHotbars();
+            for (int i = 0; i < hotbars.size(); i++) {
+                SavedHotbar hotbar = hotbars.get(i);
+                if (hotbar.getHotkeyActive().getValue()) {
+                    final int index = i;
+                    hotkeys.add(new BasicHotkey(hotbar.getHotkey().getValue(), () -> {
+                        if (new PlayerContextCheck(true, null, GameMode.CREATIVE, null).check()) {
+                            HotbarHolder.getInstance().getCurrent().setCurrent(index);
+                            hotbar.apply();
+                        }
+                    }));
+                }
+            }
+            return hotkeys;
+        });
         HotkeyHandler.getInstance().add(RefinedCreativeInventory.MOD_ID, "globalhotbar", () -> {
             List<Hotkey> hotkeys = new ArrayList<>();
             hotkeys.add(new BasicHotkey(CreativeInventoryConfig.getInstance().getSwitchHotbars().getValue(), () -> {

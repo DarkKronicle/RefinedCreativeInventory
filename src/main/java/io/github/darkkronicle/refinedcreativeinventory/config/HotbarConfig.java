@@ -5,6 +5,7 @@ import io.github.darkkronicle.darkkore.config.ModConfig;
 import io.github.darkkronicle.darkkore.config.impl.ConfigObject;
 import io.github.darkkronicle.darkkore.config.impl.JsonFileObject;
 import io.github.darkkronicle.darkkore.config.options.Option;
+import io.github.darkkronicle.darkkore.hotkeys.HotkeyHandler;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarHolder;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarProfile;
 
@@ -87,11 +88,7 @@ public class HotbarConfig extends ModConfig {
             HotbarHolder.getInstance().setDefaults();
         }
         config.close();
-    }
-
-    @Override
-    public void addOption(Option<?> option) {
-
+        HotkeyHandler.getInstance().rebuildHotkeys();
     }
 
 }

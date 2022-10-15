@@ -20,7 +20,7 @@ import java.util.List;
 
 public class CustomInventoryItemComponent extends ItemComponent {
 
-    private TextComponent hoverComponent;
+    protected TextComponent hoverComponent;
 
     @Getter protected InventoryItem item;
 

@@ -130,32 +130,178 @@
           "polished_deepslate",
           "cobbled_deepslate",
           "deepslate_tile",
-          "mossy_stone_brick"
+          "mossy_stone_brick",
+          "deepslate_brick"
         ]
       ],
       "name": "stone_{0}_types",
       "replace": [
         "{1}_{0}"
       ]
+    },
+    {
+      "iterate": [
+        "cobblestone",
+        "mossy_cobblestone",
+        "blackstone",
+        "stone",
+        "stone_brick",
+        "polished_andesite",
+        "andesite",
+        "granite",
+        "polished_granite",
+        "diorite",
+        "polished_diorite",
+        "polished_deepslate",
+        "cobbled_deepslate",
+        "deepslate_tile",
+        "deepslate_brick",
+        "mossy_stone_brick"
+      ],
+      "name": "{0}_variants",
+      "replace": [
+        "{0}",
+        "{0}s",
+        "{0}_slab",
+        "{0}_stairs",
+        "{0}_wall"
+      ]
+    },
+    {
+      "iterate": [
+        "white",
+        "orange",
+        "magenta",
+        "light_blue",
+        "yellow",
+        "green",
+        "pink",
+        "gray",
+        "light_gray",
+        "cyan",
+        "purple",
+        "blue",
+        "brown",
+        "green",
+        "red",
+        "black"
+      ],
+      "name": "{0}_variants",
+      "replace": [
+        "{0}_banner",
+        "{0}_candle",
+        "{0}_carpet",
+        "{0}_wool",
+        "{0}_concrete_powder",
+        "{0}_concrete",
+        "{0}_dye",
+        "{0}_glazed_terracotta",
+        "{0}_terracotta",
+        "{0}_shulker_box",
+        "{0}_stained_glass",
+        "{0}_stained_glass_pane"
+      ]
+    },
+    {
+      "iterate": [
+        [
+          "banner",
+          "candle",
+          "carpet",
+          "wool",
+          "concrete_powder",
+          "concrete",
+          "dye",
+          "glazed_terracotta",
+          "terracotta",
+          "shulker_box",
+          "stained_glass",
+          "stained_glass_pane"
+        ],
+        [
+          "white",
+          "orange",
+          "magenta",
+          "light_blue",
+          "yellow",
+          "green",
+          "pink",
+          "gray",
+          "light_gray",
+          "cyan",
+          "purple",
+          "blue",
+          "brown",
+          "green",
+          "red",
+          "black"
+        ]
+      ],
+      "name": "{0}_types",
+      "replace": [
+        "{1}_{0}"
+      ]
     }
   ],
-  "cobblestone_variants": [
-    "cobblestone",
-    "cobblestone_slab",
-    "cobblestone_stairs",
-    "cobblestone_wall"
+  "grass_types": [
+    "tall_grass",
+    "grass_block",
+    "grass",
+    "dirt",
+    "mycelium",
+    "podzol",
+    "coarse_dirt"
   ],
-  "stone_types": [
-    "cobblestone",
-    "mossy_cobblestone",
+  "foliage_types": [
+    "tall_grass",
+    "oak_leaves",
+    "grass",
+    "fern"
+  ],
+  "flower_types": [
+    "azure_bluet",
+    "blue_orchid",
+    "cornflower",
+    "dandelion",
+    "lilac",
+    "lily_of_the_valley",
+    "orange_tulip",
+    "oxeye_daisy",
+    "peony",
+    "pink_tulip",
+    "white_tulip",
+    "poppy",
+    "red_tulip",
+    "rose_bush",
+    "sunflower",
+    "wither_rose"
+  ],
+  "sticky_blocks": [
+    "slime_block",
+    "honey_block"
+  ],
+  "stone_brick_variants": [
     "stone_bricks",
+    "cracked_stone_bricks",
     "chiseled_stone_bricks",
-    "cracked_stone_bricks"
+    "mossy_stone_bricks"
   ],
-  "mossy_cobblestone_variants": [
+  "stone_block_types": [
+    "cobblestone",
     "mossy_cobblestone",
-    "mossy_cobblestone_slab",
-    "mossy_cobblestone_stairs",
-    "mossy_cobblestone_wall"
+    "blackstone",
+    "stone",
+    "stone_bricks",
+    "polished_andesite",
+    "andesite",
+    "granite",
+    "polished_granite",
+    "diorite",
+    "polished_diorite",
+    "polished_deepslate",
+    "cobbled_deepslate",
+    "deepslate_tile",
+    "mossy_stone_bricks",
+    "deepslate_brick"
   ]
 }
