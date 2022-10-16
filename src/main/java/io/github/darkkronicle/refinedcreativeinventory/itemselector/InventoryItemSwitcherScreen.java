@@ -14,7 +14,7 @@ public class InventoryItemSwitcherScreen extends ItemSwitcherScreen {
             if (item == null) {
                 return;
             }
-            InventoryScreen.setSlot(MinecraftClient.getInstance(), item, inventoryIndex);
+            InventoryScreen.setSlot(MinecraftClient.getInstance(), item.copy(), inventoryIndex);
         });
         this.inventoryIndex = inventoryIndex;
     }

@@ -76,10 +76,12 @@ public class ItemSwitcherScreen extends RadialScreen {
             @Override
             public void postRender(MatrixStack matrices, PositionedRectangle renderBounds, int x, int y, int mouseX, int mouseY) {
                 if (isHovered()) {
-                    matrices.translate(0, 0, 20);
+                    matrices.translate(0, 0, 500);
                     Rectangle rect = getBoundingBox();
-                    drawCenteredText(matrices, client.textRenderer, item.getStack().getName(), x + rect.width() / 2, y - 20, -1);
-                    matrices.translate(0, 0, -20);
+                    int width = client.textRenderer.getWidth(item.getStack().getName());
+                    fill(matrices, x + rect.width() / 2 - width / 2 - 2, y - 11, x + rect.width() / 2 + width / 2 + 2, y - 1, 0xAA000000);
+                    drawCenteredText(matrices, client.textRenderer, item.getStack().getName(), x + rect.width() / 2, y - 10, -1);
+                    matrices.translate(0, 0, -500);
                 }
             }
         };

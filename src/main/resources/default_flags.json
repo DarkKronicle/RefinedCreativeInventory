@@ -87,6 +87,7 @@
           "stairs",
           "door",
           "trapdoor",
+          "pressure_plate",
           "button",
           "fence_gate",
           "sign"
@@ -174,7 +175,7 @@
         "magenta",
         "light_blue",
         "yellow",
-        "green",
+        "lime",
         "pink",
         "gray",
         "light_gray",
@@ -243,6 +244,15 @@
       ]
     }
   ],
+  "stained_glass_types": [
+    "glass"
+  ],
+  "stained_glass_pane_types": [
+    "glass_pane"
+  ],
+  "shulker_box_types": [
+    "shulker_box"
+  ],
   "grass_types": [
     "tall_grass",
     "grass_block",
@@ -303,5 +313,10 @@
     "deepslate_tile",
     "mossy_stone_bricks",
     "deepslate_brick"
+  ],
+  "command_block_types": [
+    "command_block",
+    "chain_command_block",
+    "repeating_command_block"
   ]
 }

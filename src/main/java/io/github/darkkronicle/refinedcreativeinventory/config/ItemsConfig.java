@@ -155,7 +155,8 @@ public class ItemsConfig extends ModConfig {
 
                     InventoryItem stack = ItemHolder.getInstance().getOrCreate(new ItemStack(item));
                     stack.addFlag(new ItemFlag(flag, newOrder));
-                    newOrder++;
+                    // Add 10 so it's easier for people to add their own
+                    newOrder += 10;
                 }
             } else {
                 List<?> list = (List<?>) o;
@@ -173,7 +174,8 @@ public class ItemsConfig extends ModConfig {
                     } else {
                         loadList(name, replace, (List<?>) inner, depth, newOrder);
                     }
-                    newOrder++;
+                    // Add 20 so it's easier for people to add their own
+                    newOrder += 20;
                 }
 
                 return;
