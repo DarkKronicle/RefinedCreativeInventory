@@ -75,11 +75,12 @@ public class ItemSwitcherScreen extends RadialScreen {
 
             @Override
             public void postRender(MatrixStack matrices, PositionedRectangle renderBounds, int x, int y, int mouseX, int mouseY) {
-                if (hoverComponent == null) {
-                    return;
+                if (isHovered()) {
+                    matrices.translate(0, 0, 20);
+                    Rectangle rect = getBoundingBox();
+                    drawCenteredText(matrices, client.textRenderer, item.getStack().getName(), x + rect.width() / 2, y - 20, -1);
+                    matrices.translate(0, 0, -20);
                 }
-                int centerX = (width - hoverComponent.getWidth()) / 2;
-                super.postRender(matrices, renderBounds, centerX, -18, mouseX, mouseY);
             }
         };
         component.setBackgroundColor(InventoryScreen.getComponentBackgroundColor().withAlpha(200));

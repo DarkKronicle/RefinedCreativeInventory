@@ -54,7 +54,7 @@ public class InventoryItemObject extends KonstructObject<InventoryItemObject> {
                     Result flagObj = Function.parseArgument(context, input, 0);
                     if (Function.shouldReturn(flagObj)) return flagObj;
                     String flag = flagObj.getContent().getString().toLowerCase(Locale.ROOT);
-                    if (self.getItem().getFlags().stream().anyMatch(f -> f.contains(flag))) {
+                    if (self.getItem().getFlags().stream().anyMatch(f -> f.getName().contains(flag))) {
                         return Result.success(new BooleanObject(true));
                     }
                     return Result.success(new BooleanObject(false));

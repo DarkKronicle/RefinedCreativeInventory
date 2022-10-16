@@ -57,7 +57,7 @@ public class HotbarProfileEditor extends ConfigScreen {
                 new Color(100, 100, 100, 100),
                 new Color(150, 150, 150, 150),
                 (button) -> {
-                    HotbarHolder.getInstance().getProfiles().remove(profile);
+                    HotbarHolder.getInstance().removeProfile(profile);
                     close();
                 }
         );

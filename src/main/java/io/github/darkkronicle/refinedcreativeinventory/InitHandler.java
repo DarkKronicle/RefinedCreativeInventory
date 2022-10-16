@@ -6,6 +6,7 @@ import io.github.darkkronicle.darkkore.hotkeys.HotkeyHandler;
 import io.github.darkkronicle.darkkore.intialization.Initializer;
 import io.github.darkkronicle.darkkore.intialization.profiles.PlayerContextCheck;
 import io.github.darkkronicle.refinedcreativeinventory.config.CreativeInventoryConfig;
+import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarHolder;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.HotbarProfile;
 import io.github.darkkronicle.refinedcreativeinventory.hotbars.SavedHotbar;
@@ -39,6 +40,15 @@ public class InitHandler implements Initializer {
                     }));
                 }
             }
+            return hotkeys;
+        });
+        HotkeyHandler.getInstance().add(RefinedCreativeInventory.MOD_ID, "general", () -> {
+            List<Hotkey> hotkeys = new ArrayList<>();
+            hotkeys.add(new BasicHotkey(CreativeInventoryConfig.getInstance().getOpenRefinedScreen().getValue(), () -> {
+                if (new PlayerContextCheck(null, null, GameMode.CREATIVE, null).check()) {
+                    MinecraftClient.getInstance().setScreen(new InventoryScreen());
+                }
+            }));
             return hotkeys;
         });
         HotkeyHandler.getInstance().add(RefinedCreativeInventory.MOD_ID, "globalhotbar", () -> {

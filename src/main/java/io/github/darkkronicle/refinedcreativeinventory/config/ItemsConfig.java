@@ -12,6 +12,7 @@ import io.github.darkkronicle.darkkore.config.options.Option;
 import io.github.darkkronicle.darkkore.util.FileUtil;
 import io.github.darkkronicle.darkkore.util.JsonUtil;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.items.ItemFlag;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.util.ItemSerializer;
@@ -131,10 +132,11 @@ public class ItemsConfig extends ModConfig {
         List<?> iterate = (List<?>) config.getOptional("iterate").orElseGet(() -> List.of(""));
         List<String> replace = (List<String>) config.getOptional("replace").orElseGet(ArrayList::new);
         String name = config.get("name");
-        loadList(name, replace, iterate, 0);
+        loadList(name, replace, iterate, 0, 0);
     }
 
-    private void loadList(String name, List<String> replace, List<?> values, int depth) {
+    private void loadList(String name, List<String> replace, List<?> values, int depth, int order) {
+        int newOrder = order;
         for (Object o : values) {
             if (o instanceof String string) {
                 String flag = name.replace("{" + depth + "}", string);
@@ -152,20 +154,26 @@ public class ItemsConfig extends ModConfig {
                     }
 
                     InventoryItem stack = ItemHolder.getInstance().getOrCreate(new ItemStack(item));
-                    stack.addFlag(flag);
+                    stack.addFlag(new ItemFlag(flag, newOrder));
+                    newOrder++;
                 }
             } else {
                 List<?> list = (List<?>) o;
                 for (Object inner : list) {
                     if (inner instanceof String string) {
                         String innerName = name.replace("{" + depth + "}", string);
+                        int innerOrder = newOrder;
+                        if (!string.equals(innerName)) {
+                            innerOrder = 0;
+                        }
                         List<String> newReplace = replace.stream().map(rep -> rep.replace("{" + depth + "}", string)).toList();
                         for (Object value : values.subList(1, values.size())) {
-                            loadList(innerName, newReplace, (List<?>) value, depth + 1);
+                            loadList(innerName, newReplace, (List<?>) value, depth + 1, innerOrder);
                         }
                     } else {
-                        loadList(name, replace, (List<?>) inner, depth);
+                        loadList(name, replace, (List<?>) inner, depth, newOrder);
                     }
+                    newOrder++;
                 }
 
                 return;
@@ -175,7 +183,6 @@ public class ItemsConfig extends ModConfig {
     }
 
     private void loadFlags(ConfigObject config) {
-
         if (config.contains("compound")) {
             Object compound = config.get("compound");
             if (compound instanceof List<?>) {
@@ -193,6 +200,8 @@ public class ItemsConfig extends ModConfig {
             // This is a bit scary, but we should be in a try catch
             List<String> list = (List<String>) entry.getValue();
 
+            int order = 0;
+
             for (String value : list) {
                 if (!value.contains(":")) {
                     value = "minecraft:" + value;
@@ -205,7 +214,8 @@ public class ItemsConfig extends ModConfig {
                 }
 
                 InventoryItem stack = ItemHolder.getInstance().getOrCreate(new ItemStack(item));
-                stack.addFlag(flag);
+                stack.addFlag(new ItemFlag(flag, order));
+                order++;
             }
         }
     }
@@ -234,7 +244,7 @@ public class ItemsConfig extends ModConfig {
 
     public static void saveInventoryItem(ConfigObject nest, InventoryItem item) {
         ItemSerializer.serialize(nest, item.getStack());
-        nest.set("flags", item.getFlags());
+        nest.set("flags", item.getFlags().stream().map(ItemFlag::toString).toList());
         nest.set("custom", item.isCustom());
     }
 
@@ -254,11 +264,6 @@ public class ItemsConfig extends ModConfig {
             item.setCustom(nest.get("custom"));
         }
         return item;
-    }
-
-    @Override
-    public void addOption(Option<?> option) {
-
     }
 
 }

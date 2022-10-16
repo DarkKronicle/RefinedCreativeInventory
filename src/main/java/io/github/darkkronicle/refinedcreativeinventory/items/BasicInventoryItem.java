@@ -16,7 +16,7 @@ import java.util.List;
 public class BasicInventoryItem implements InventoryItem {
 
     @Getter private final ItemStack stack;
-    private List<String> flags;
+    private List<ItemFlag> flags;
     private List<ItemGroup> groups = new ArrayList<>();
 
     @Setter @Getter private boolean custom = false;
@@ -25,13 +25,13 @@ public class BasicInventoryItem implements InventoryItem {
         this(stack, new ArrayList<>());
     }
 
-    public BasicInventoryItem(ItemStack stack, List<String> flags) {
+    public BasicInventoryItem(ItemStack stack, List<ItemFlag> flags) {
         this.stack = stack;
         this.flags = flags;
     }
 
     @Override
-    public List<String> getFlags() {
+    public List<ItemFlag> getFlags() {
         return flags;
     }
 
@@ -53,7 +53,7 @@ public class BasicInventoryItem implements InventoryItem {
         return components;
     }
 
-    public void setFlags(List<String> flags) {
+    public void setFlags(List<ItemFlag> flags) {
         this.flags = flags;
     }
 
@@ -65,7 +65,7 @@ public class BasicInventoryItem implements InventoryItem {
     }
 
     @Override
-    public void addFlag(String flag) {
+    public void addFlag(ItemFlag flag) {
         this.flags.add(flag);
     }
 }

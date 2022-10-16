@@ -13,7 +13,7 @@ public interface InventoryItem extends Comparable<InventoryItem> {
 
     ItemStack getStack();
 
-    List<String> getFlags();
+    List<ItemFlag> getFlags();
 
     List<Identifier> getTags();
 
@@ -32,5 +32,10 @@ public interface InventoryItem extends Comparable<InventoryItem> {
         return getStack().getName().getString().compareTo(o.getStack().getName().getString());
     }
 
-    void addFlag(String flag);
+    void addFlag(ItemFlag flag);
+
+    default void addFlag(String flag) {
+        addFlag(ItemFlag.fromString(flag));
+    }
+
 }

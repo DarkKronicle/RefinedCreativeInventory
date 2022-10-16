@@ -72,7 +72,7 @@ public class BasicItemSearch implements ItemSearch {
         }
         if (parameters.containsKey(SearchFilter.FLAG)) {
             String query = parameters.get(SearchFilter.FLAG);
-            items = items.stream().filter(item -> item.getFlags().stream().anyMatch(tag -> tag.contains(query))).toList();
+            items = items.stream().filter(item -> item.getFlags().stream().anyMatch(tag -> tag.getName().contains(query))).toList();
         }
         if (parameters.containsKey(SearchFilter.TAG)) {
             String query = parameters.get(SearchFilter.TAG);

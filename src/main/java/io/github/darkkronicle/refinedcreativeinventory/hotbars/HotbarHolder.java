@@ -56,4 +56,12 @@ public class HotbarHolder {
         HotbarHolder.getInstance().addProfile(new HotbarProfile());
         HotbarHolder.getInstance().get(0).add(new SavedHotbar());
     }
+
+    public void removeProfile(HotbarProfile profile) {
+        profiles.remove(profile);
+        if (profiles.size() == 0) {
+            setDefaults();
+        }
+    }
+
 }

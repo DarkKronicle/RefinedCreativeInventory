@@ -10,6 +10,7 @@ import io.github.darkkronicle.darkkore.hotkeys.HotkeySettingsOption;
 import io.github.darkkronicle.darkkore.intialization.profiles.PlayerContextCheck;
 import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.FileUtil;
+import io.github.darkkronicle.darkkore.util.InputUtil;
 import lombok.Getter;
 import org.lwjgl.glfw.GLFW;
 
@@ -28,6 +29,7 @@ public class CreativeInventoryConfig extends ModConfig {
         return new File(FileUtil.getConfigDirectory(), "refinedCreativeInventory");
     }
 
+    @Getter private final BooleanOption overrideVanilla = new BooleanOption("overrideVanilla", "rci.option.overridevanilla", "rci.option.info.overridevanilla", true);
     @Getter private final BooleanOption inventorySplit = new BooleanOption("inventorySplit", "rci.option.inventorysplit", "rci.option.info.inventorysplit", true);
     @Getter private final BooleanOption hotbarSplit = new BooleanOption("hotbarSplit", "rci.option.hotbarsplit", "rci.option.info.hotbarsplit", true);
     @Getter private final BooleanOption persistentSearch = new BooleanOption("persistentSearch", "rci.option.persistentsearch", "rci.option.info.persistentsearch", true);
@@ -47,9 +49,21 @@ public class CreativeInventoryConfig extends ModConfig {
     @Getter private final ColorOption slotOutlineColor = new ColorOption("slotOutline", "rci.option.slotoutline", "rci.option.info.mainbackground",
             new Color(200, 200, 200, 34));
 
-    @Getter private final HotkeySettingsOption openSelector = new HotkeySettingsOption("openSelector", "rci.option.openselector", "rci.option.info.openselector", new HotkeySettings(false, false, true, List.of(GLFW.GLFW_MOUSE_BUTTON_MIDDLE), PlayerContextCheck.getDefault()));
+    @Getter private final HotkeySettingsOption openSelector = new HotkeySettingsOption(
+            "openSelector", "rci.option.openselector", "rci.option.info.openselector",
+            new HotkeySettings(
+                    false, false, true, List.of(InputUtil.MOUSE_MIDDLE), PlayerContextCheck.getDefault()
+            )
+    );
 
-    private final List<Option<?>> options = ImmutableList.of(inventorySplit, hotbarSplit, persistentSearch, switchHotbars, nextHotbar, previousHotbar, mainBackgroundColor, componentBackgroundColor, componentOutlineColor, slotOutlineColor, openSelector);
+    @Getter private final HotkeySettingsOption openRefinedScreen = new HotkeySettingsOption(
+            "openRefinedScreen", "rci.option.openrefinedscreen", "rci.option.info.openrefinedscreen",
+            new HotkeySettings(
+                    false, false, true, List.of(), PlayerContextCheck.getDefault()
+            )
+    );
+
+    private final List<Option<?>> options = ImmutableList.of(overrideVanilla, openRefinedScreen, inventorySplit, hotbarSplit, persistentSearch, switchHotbars, nextHotbar, previousHotbar, mainBackgroundColor, componentBackgroundColor, componentOutlineColor, slotOutlineColor, openSelector);
 
     @Override
     public File getFile() {

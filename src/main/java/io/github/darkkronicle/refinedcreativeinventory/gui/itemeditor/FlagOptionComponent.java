@@ -9,11 +9,13 @@ import io.github.darkkronicle.darkkore.util.StringUtil;
 import io.github.darkkronicle.darkkore.util.search.FindType;
 import io.github.darkkronicle.darkkore.util.search.SearchUtil;
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.items.ItemFlag;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class FlagOptionComponent extends TextOptionComponent<String, StringOption> {
 
@@ -31,7 +33,7 @@ public class FlagOptionComponent extends TextOptionComponent<String, StringOptio
 
     @Override
     public void setValueFromString(String string) {
-        item.setFlags(new ArrayList<>(Arrays.asList(string.split(","))));
+        item.setFlags(new ArrayList<>(Arrays.stream(string.split(",")).map(ItemFlag::fromString).toList()));
     }
 
     @Override
@@ -46,7 +48,7 @@ public class FlagOptionComponent extends TextOptionComponent<String, StringOptio
 
     public static FlagOptionComponent of(Screen parent, BasicInventoryItem item, int width) {
         StringOption option = new StringOption("flags", "rci.itemedit.flags", "rci.itemedit.info.flags", "");
-        option.setValue(String.join(",", item.getFlags()));
+        option.setValue(item.getFlags().stream().map(ItemFlag::toString).collect(Collectors.joining(",")));
         return new FlagOptionComponent(parent, item, option, width);
     }
 

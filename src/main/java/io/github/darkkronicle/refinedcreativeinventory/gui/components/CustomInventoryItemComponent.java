@@ -5,6 +5,7 @@ import io.github.darkkronicle.darkkore.gui.components.impl.TextComponent;
 import io.github.darkkronicle.darkkore.util.*;
 import io.github.darkkronicle.darkkore.util.text.RawText;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
+import io.github.darkkronicle.refinedcreativeinventory.items.ItemFlag;
 import lombok.Getter;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.item.TooltipContext;
@@ -61,7 +62,7 @@ public class CustomInventoryItemComponent extends ItemComponent {
                 text.append("\n").append(new RawText("Tags: " + String.join(", ", tags.stream().map(Identifier::getPath).toList()), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
             }
         }
-        List<String> flags = item.getFlags();
+        List<String> flags = item.getFlags().stream().map(ItemFlag::getName).toList();
         if (!flags.isEmpty()) {
             if (flags.size() == 1) {
                 text.append("\n").append(new RawText("Flag: " + flags.get(0), Style.EMPTY.withColor(Formatting.DARK_GRAY)));
