@@ -6,6 +6,9 @@ import lombok.Getter;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.registry.Registry;
 
@@ -34,7 +37,16 @@ public class ItemHolder {
             } else {
                 getOrCreate(new ItemStack(item));
             }
-
+        }
+        for (int i = 0; i < 15; i++) {
+            ItemStack stack = new ItemStack(Items.LIGHT);
+            NbtCompound nbt = new NbtCompound();
+            NbtCompound blockState = new NbtCompound();
+            blockState.putString("level", String.valueOf(i));
+            nbt.put("BlockStateTag", blockState);
+            stack.setNbt(nbt);
+            stack.setCustomName(Text.literal("§dLight " + i));
+            getOrCreate(stack);
         }
         populateGroups();
         Collections.sort(allItems);

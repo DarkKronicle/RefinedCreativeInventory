@@ -157,7 +157,9 @@
         "cobbled_deepslate",
         "deepslate_tile",
         "deepslate_brick",
-        "mossy_stone_brick"
+        "mossy_stone_brick",
+        "mud_brick",
+        "end_stone_brick"
       ],
       "name": "{0}_variants",
       "replace": [
@@ -166,6 +168,77 @@
         "{0}_slab",
         "{0}_stairs",
         "{0}_wall"
+      ]
+    },
+    {
+      "iterate": [
+        "sand",
+        "red_sand"
+      ],
+      "name": "{0}_variants",
+      "replace": [
+        "{0}",
+        "{0}stone",
+        "{0}stone_slab",
+        "{0}stone_stairs",
+        "{0}stone_wall",
+        "smooth_{0}stone",
+        "smooth_{0}stone_slab",
+        "smooth_{0}stone_stairs",
+        "cut_{0}stone",
+        "chiseled_{0}stone"
+      ]
+    },
+    {
+      "iterate": [
+        [
+          "stairs",
+          "slab",
+          "wall"
+        ],
+        [
+          "sandstone",
+          "red_sandstone",
+          "smooth_sandstone",
+          "smooth_red_sandstone"
+        ]
+      ],
+      "name": "sand_{0}_types",
+      "replace": [
+        "{1}_{0}"
+      ]
+    },
+    {
+      "iterate": [
+        "prismarine",
+        "prismarine_brick",
+        "dark_prismarine"
+      ],
+      "name": "{0}_variants",
+      "replace": [
+        "{0}",
+        "{0}s",
+        "{0}_slab",
+        "{0}_stairs",
+        "{0}_wall"
+      ]
+    },
+    {
+      "iterate": [
+        [
+          "stairs",
+          "slab",
+          "wall"
+        ],
+        [
+          "prismarine",
+          "prismarine_brick",
+          "dark_prismarine"
+        ]
+      ],
+      "name": "prismarine_{0}_types",
+      "replace": [
+        "{1}_{0}"
       ]
     },
     {
@@ -225,7 +298,7 @@
           "magenta",
           "light_blue",
           "yellow",
-          "green",
+          "lime",
           "pink",
           "gray",
           "light_gray",
@@ -260,7 +333,14 @@
     "dirt",
     "mycelium",
     "podzol",
-    "coarse_dirt"
+    "coarse_dirt",
+    "mud",
+    "packed_mud"
+  ],
+  "prismarine_block_types": [
+    "prismarine",
+    "prismarine_bricks",
+    "dark_prismarine"
   ],
   "foliage_types": [
     "tall_grass",
@@ -296,6 +376,14 @@
     "chiseled_stone_bricks",
     "mossy_stone_bricks"
   ],
+  "sandstone_block_types": [
+    "sandstone",
+    "red_sandstone"
+  ],
+  "smooth_sandstone_block_types": [
+    "smooth_sandstone",
+    "smooth_red_sandstone"
+  ],
   "stone_block_types": [
     "cobblestone",
     "mossy_cobblestone",
@@ -318,5 +406,153 @@
     "command_block",
     "chain_command_block",
     "repeating_command_block"
+  ],
+  "light": [
+    "torch",
+    "glowstone",
+    "sea_lantern",
+    "jack_o_lantern",
+    "end_rod",
+    "sea_pickle",
+    "candle",
+    "light"
+  ],
+  "light_variants": [
+    "light"
+  ],
+  "buckets": [
+    "bucket",
+    "water_bucket",
+    "lava_bucket",
+    "powder_snow_bucket",
+    "axolotl_bucket",
+    "cod_bucket",
+    "pufferfish_bucket",
+    "salmon_bucket",
+    "tadpole_bucket",
+    "tropical_fish_bucket"
+  ],
+  "chorus_types": [
+    "chorus_plant",
+    "chorus_flower",
+    "chorus_fruit",
+    "popped_chorus_fruit",
+    "end_stone"
+  ],
+  "sand_types": [
+    "sand",
+    "sandstone",
+    "red_sand",
+    "red_sandstone"
+  ],
+  "end_stone_types": [
+    "end_stone",
+    "end_stone_bricks"
+  ],
+  "minecart_types": [
+    "minecart",
+    "chest_minecart",
+    "hopper_minecart",
+    "tnt_minecart",
+    "furnace_minecart",
+    "command_block_minecart"
+  ],
+  "rail_types": [
+    "rail",
+    "powered_rail",
+    "detector_rail",
+    "activator_rail"
+  ],
+  "climb_types": [
+    "ladder",
+    "vine",
+    "weeping_vines",
+    "twisting_vines",
+    "scaffolding"
+  ],
+  "mushrooms": [
+    "brown_mushroom",
+    "red_mushroom",
+    "crimson_fungus",
+    "warped_fungus",
+    "brown_mushroom_block",
+    "red_mushroom_block",
+    "mushroom_stem"
+  ],
+  "water_spawn_eggs": [
+    "cod_spawn_egg",
+    "drowned_spawn_egg",
+    "elder_guardian_spawn_egg",
+    "pufferfish_spawn_egg",
+    "salmon_spawn_egg",
+    "squid_spawn_egg",
+    "tropical_fish_spawn_egg",
+    "turtle_spawn_egg",
+    "axolotl_spawn_egg",
+    "glow_squid_spawn_egg"
+  ],
+  "zombie_spawn_eggs": [
+    "drowned_spawn_egg",
+    "husk_spawn_egg",
+    "zombie_spawn_egg",
+    "zombie_horse_spawn_egg",
+    "zombie_villager_spawn_egg",
+    "piglin_spawn_egg",
+    "zombified_piglin_spawn_egg",
+    "piglin_brute_spawn_egg"
+  ],
+  "skeleton_spawn_eggs": [
+    "skeleton_spawn_egg",
+    "skeleton_horse_spawn_egg",
+    "stray_spawn_egg",
+    "wither_skeleton_spawn_egg"
+  ],
+  "villager_spawn_eggs": [
+    "evoker_spawn_egg",
+    "vex_spawn_egg",
+    "vindicator_spawn_egg",
+    "villager_spawn_egg",
+    "pillager_spawn_egg",
+    "ravager_spawn_egg",
+    "wandering_trader_spawn_egg"
+  ],
+  "rideable_spawn_eggs": [
+    "donkey_spawn_egg",
+    "horse_spawn_egg",
+    "husk_spawn_egg",
+    "llama_spawn_egg",
+    "mule_spawn_egg",
+    "skeleton_horse_spawn_egg",
+    "zombie_horse_spawn_egg",
+    "pig_spawn_egg"
+  ],
+  "land_animal_spawn_eggs": [
+    "bat_spawn_egg",
+    "chicken_spawn_egg",
+    "cow_spawn_egg",
+    "donkey_spawn_egg",
+    "horse_spawn_egg",
+    "llama_spawn_egg",
+    "mooshroom_spawn_egg",
+    "mule_spawn_egg",
+    "ocelot_spawn_egg",
+    "parrot_spawn_egg",
+    "polar_bear_spawn_egg",
+    "sheep_spawn_egg",
+    "wolf_spawn_egg",
+    "cat_spawn_egg",
+    "fox_spawn_egg",
+    "panda_spawn_egg",
+    "trader_llama_spawn_egg",
+    "bee_spawn_egg",
+    "strider_spawn_egg",
+    "goat_spawn_egg"
+  ],
+  "flying_spawn_eggs": [
+    "bat_spawn_egg",
+    "blaze_spawn_egg",
+    "ghast_spawn_egg",
+    "parrot_spawn_egg",
+    "vex_spawn_egg"
   ]
 }
