@@ -5,6 +5,7 @@ import io.github.darkkronicle.darkkore.gui.components.transform.PositionedCompon
 import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.PositionedRectangle;
 import io.github.darkkronicle.darkkore.util.Rectangle;
+import io.github.darkkronicle.darkkore.util.render.RenderUtil;
 import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInventoryItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
@@ -65,13 +66,13 @@ public class ItemSwitcherScreen extends RadialScreen {
             }
 
             @Override
-            public void onHoveredImpl(int x, int y, int mouseX, int mouseY, boolean hovered) {
-                if (hovered) {
-                    setBackgroundColor(new Color(200, 200, 200, 200));
+            public void render(MatrixStack matrices, PositionedRectangle renderBounds, int x, int y, int mouseX, int mouseY) {
+                if (isHovered()) {
+                    RenderUtil.drawCircle(matrices, x + getBoundingBox().width() / 2f, y + getBoundingBox().height() / 2f, 11, new Color(150, 150, 150, 170).color());
                 } else {
-//                    setBackgroundColor(InventoryScreen.getComponentBackgroundColor().withAlpha(200));
-                    setBackgroundColor(null);
+                    RenderUtil.drawCircle(matrices, x + getBoundingBox().width() / 2f, y + getBoundingBox().height() / 2f, 11, new Color(20, 20, 20, 170).color());
                 }
+                super.render(matrices, renderBounds, x, y, mouseX, mouseY);
             }
 
             @Override

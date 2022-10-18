@@ -133,11 +133,11 @@ public abstract class RadialScreen extends ComponentScreen {
     @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         int radius = startingRadius + 12;
-        int background = 0x88222222;
+        int background = 0x18222222;
         RenderUtil.drawCircle(matrices, width / 2f, height / 2f, radius - 25 + 1, background);
         for (int i = 0; i < getRadials().size(); i++) {
             RenderUtil.drawRing(matrices, width / 2f, height / 2f, radius, radius - 25,
-                    new Color(25 + i * 20, 10, 30 + i * 20, 200).color()
+                    new Color(0, 0, 0, 50).color()
             );
             if (i != getRadials().size() - 1) {
                 RenderUtil.drawRing(matrices, width / 2f, height / 2f, radius + (increasingRadius - 25) + 1, radius - 1, background);
