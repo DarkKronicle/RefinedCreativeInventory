@@ -69,7 +69,8 @@ public class ItemSwitcherScreen extends RadialScreen {
                 if (hovered) {
                     setBackgroundColor(new Color(200, 200, 200, 200));
                 } else {
-                    setBackgroundColor(InventoryScreen.getComponentBackgroundColor().withAlpha(200));
+//                    setBackgroundColor(InventoryScreen.getComponentBackgroundColor().withAlpha(200));
+                    setBackgroundColor(null);
                 }
             }
 
@@ -85,7 +86,7 @@ public class ItemSwitcherScreen extends RadialScreen {
                 }
             }
         };
-        component.setBackgroundColor(InventoryScreen.getComponentBackgroundColor().withAlpha(200));
+//        component.setBackgroundColor(InventoryScreen.getComponentBackgroundColor().withAlpha(200));
         return component;
     }
 
