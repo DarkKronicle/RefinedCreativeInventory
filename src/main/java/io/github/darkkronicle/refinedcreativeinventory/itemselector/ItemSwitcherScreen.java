@@ -1,12 +1,13 @@
 package io.github.darkkronicle.refinedcreativeinventory.itemselector;
 
+import io.github.darkkronicle.darkkore.gui.ComponentScreen;
 import io.github.darkkronicle.darkkore.gui.components.Component;
+import io.github.darkkronicle.darkkore.gui.components.transform.ListComponent;
 import io.github.darkkronicle.darkkore.gui.components.transform.PositionedComponent;
 import io.github.darkkronicle.darkkore.util.Color;
 import io.github.darkkronicle.darkkore.util.PositionedRectangle;
 import io.github.darkkronicle.darkkore.util.Rectangle;
 import io.github.darkkronicle.darkkore.util.render.RenderUtil;
-import io.github.darkkronicle.refinedcreativeinventory.gui.InventoryScreen;
 import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInventoryItemComponent;
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
@@ -14,28 +15,22 @@ import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 
-public class ItemSwitcherScreen extends RadialScreen {
+public class ItemSwitcherScreen extends ComponentScreen {
 
     private final Consumer<ItemStack> callback;
     private final ItemStack startingItem;
+    private double lastMouseX = 0;
+    private double lastMouseY = 0;
 
     public ItemSwitcherScreen(ItemStack startingItem, Consumer<ItemStack> callback) {
         super();
         this.startingItem = startingItem;
         setBackgroundColor(new Color(0, 0, 0, 0));
         this.callback = callback;
-        for (List<InventoryItem> items : ItemSwitcherHandler.getInstance().getStacks(startingItem)) {
-            List<Component> radialItems = new ArrayList<>();
-            for (InventoryItem item : items) {
-                radialItems.add(createComponent(item));
-            }
-            getRadials().add(new Radial(radialItems, radialItems.size()));
-        }
     }
 
     public void forceClose() {
@@ -44,6 +39,12 @@ public class ItemSwitcherScreen extends RadialScreen {
     }
 
     @Override
+    public void renderComponents(MatrixStack matrices, int mouseX, int mouseY) {
+        lastMouseX = mouseX;
+        lastMouseY = mouseY;
+        super.renderComponents(matrices, mouseX, mouseY);
+    }
+
     public PositionedComponent getCenterComponent() {
         Component base = createComponent(ItemHolder.getInstance().get(startingItem).orElseGet(() -> new BasicInventoryItem(startingItem)));
         Rectangle bounds = base.getBoundingBox();
@@ -52,12 +53,31 @@ public class ItemSwitcherScreen extends RadialScreen {
 
     @Override
     public void initImpl() {
+        addComponent(getCenterComponent());
+        int radius = 50;
+        for (List<InventoryItem> items : ItemSwitcherHandler.getInstance().getStacks(startingItem)) {
+            int trueRadius = radius + 12;
+            Radial radial = new Radial(this, items.size(), radius, trueRadius, 25);
+            radial.setCircleBackgroundColor(new Color(0x28222222));
+            for (InventoryItem item : items) {
+                radial.addComponent(createComponent(item));
+            }
+            addComponent(new PositionedComponent(this, radial, width / 2 - trueRadius, height / 2 - trueRadius));
+            radius += 30;
+        }
+        ListComponent modifiers = new ListComponent(this, -1, 20, false);
+        for (ItemModifier modifier : ItemSwitcherHandler.getInstance().getModifiers()) {
+            modifiers.addComponent(modifier.getComponent(this, callback, startingItem));
+        }
+        if (modifiers.getComponents().size() > 0) {
+            PositionedComponent positioned = new PositionedComponent(this, modifiers, (width - modifiers.getWidth()) / 2, 10);
+            addComponent(positioned);
+        }
         ItemSwitcherHandler.getInstance().setCurrentScreen(this);
-        super.initImpl();
     }
 
     protected Component createComponent(InventoryItem item) {
-        CustomInventoryItemComponent component = new CustomInventoryItemComponent(this, item) {
+        return new CustomInventoryItemComponent(ItemSwitcherScreen.this, item) {
             @Override
             public boolean mouseClickedImpl(int x, int y, int mouseX, int mouseY, int button) {
                 close();
@@ -80,21 +100,18 @@ public class ItemSwitcherScreen extends RadialScreen {
                 if (isHovered()) {
                     matrices.translate(0, 0, 500);
                     Rectangle rect = getBoundingBox();
-                    int width = client.textRenderer.getWidth(item.getStack().getName());
-                    fill(matrices, x + rect.width() / 2 - width / 2 - 2, y - 11, x + rect.width() / 2 + width / 2 + 2, y - 1, 0xAA000000);
+                    int width1 = client.textRenderer.getWidth(item.getStack().getName());
+                    fill(matrices, x + rect.width() / 2 - width1 / 2 - 2, y - 11, x + rect.width() / 2 + width1 / 2 + 2, y - 1, 0xAA000000);
                     drawCenteredText(matrices, client.textRenderer, item.getStack().getName(), x + rect.width() / 2, y - 10, -1);
                     matrices.translate(0, 0, -500);
                 }
             }
         };
-//        component.setBackgroundColor(InventoryScreen.getComponentBackgroundColor().withAlpha(200));
-        return component;
     }
 
     @Override
     public void close() {
         super.close();
-        callback.accept(null);
         ItemSwitcherHandler.getInstance().setCurrentScreen(null);
     }
 

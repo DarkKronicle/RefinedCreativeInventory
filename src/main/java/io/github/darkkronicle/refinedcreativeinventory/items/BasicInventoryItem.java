@@ -66,6 +66,8 @@ public class BasicInventoryItem implements InventoryItem {
 
     @Override
     public void addFlag(ItemFlag flag) {
-        this.flags.add(flag);
+        if (!flags.contains(flag)) {
+            this.flags.add(flag);
+        }
     }
 }

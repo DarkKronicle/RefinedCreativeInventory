@@ -42,6 +42,10 @@
         "{0}_wood",
         "stripped_{0}_log",
         "stripped_{0}_wood",
+        "stripped_{0}_stem",
+        "{0}_stem",
+        "{0}_hyphae",
+        "stripped_{0}_hyphae",
         "{0}_leaves",
         "{0}_slab",
         "{0}_stairs",
@@ -56,17 +60,9 @@
     {
       "iterate": [
         [
-          "wood",
-          "log"
+          "hyphae"
         ],
         [
-          "oak",
-          "birch",
-          "spruce",
-          "acacia",
-          "mangrove",
-          "dark_oak",
-          "jungle",
           "warped",
           "crimson"
         ]
@@ -74,6 +70,22 @@
       "name": "stripped_{0}_types",
       "replace": [
         "stripped_{1}_{0}"
+      ]
+    },
+    {
+      "iterate": [
+        [
+          "hyphae",
+          "stem"
+        ],
+        [
+          "warped",
+          "crimson"
+        ]
+      ],
+      "name": "{0}_types",
+      "replace": [
+        "{1}_{0}"
       ]
     },
     {
@@ -107,6 +119,27 @@
       "name": "wood_{0}_types",
       "replace": [
         "{1}_{0}"
+      ]
+    },
+    {
+      "iterate": [
+        [
+          "log",
+          "wood"
+        ],
+        [
+          "oak",
+          "birch",
+          "spruce",
+          "acacia",
+          "mangrove",
+          "dark_oak",
+          "jungle"
+        ]
+      ],
+      "name": "wood_{0}_types",
+      "replace": [
+        "stripped_{1}_{0}"
       ]
     },
     {

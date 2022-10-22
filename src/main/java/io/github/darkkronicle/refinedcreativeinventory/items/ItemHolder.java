@@ -46,8 +46,9 @@ public class ItemHolder {
             nbt.put("BlockStateTag", blockState);
             stack.setNbt(nbt);
             stack.setCustomName(Text.literal("§dLight " + i));
-            getOrCreate(stack);
+            getOrCreate(stack).addFlag(new ItemFlag("custom_light", i * 10));
         }
+        getOrCreate(new ItemStack(Items.LIGHT)).addFlag(new ItemFlag("custom_light", 150));
         populateGroups();
         Collections.sort(allItems);
     }

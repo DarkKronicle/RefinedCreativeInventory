@@ -7,6 +7,11 @@ import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +33,38 @@ public class ItemSwitcherHandler {
         return INSTANCE;
     }
 
-    private ItemSwitcherHandler() {}
+    @Getter
+    private List<ItemModifier> modifiers = new ArrayList<>();
+
+    private ItemSwitcherHandler() {
+        modifiers.add(new SimpleModifier(new ItemStack(Items.SHULKER_BOX).setCustomName(Text.literal("Fill Shulker")), stack -> {
+            if (!stack.getItem().canBeNested()) {
+                return stack;
+            }
+            ItemStack inner = stack.copy();
+            NbtElement tag = inner.getOrCreateNbt().get("tag");
+            if (tag instanceof NbtCompound compound) {
+                compound.remove("BlockEntityTag");
+            }
+            inner.setCount(inner.getItem().getMaxCount());
+            NbtCompound innerNbt = inner.getOrCreateNbt();
+            innerNbt.remove("BlockEntityTag");
+            innerNbt.remove("pages");
+            ItemStack newStack = new ItemStack(Items.SHULKER_BOX);
+            NbtCompound nbt = newStack.getOrCreateNbt();
+            NbtCompound blockEntity = new NbtCompound();
+            NbtList items = new NbtList();
+            for (int i = 0; i < 27; i++) {
+                NbtCompound item = new NbtCompound();
+                inner.writeNbt(item);
+                item.putInt("Slot", i);
+                items.add(item);
+            }
+            blockEntity.put("Items", items);
+            nbt.put("BlockEntityTag", blockEntity);
+            return newStack;
+        }));
+    }
 
     public List<List<InventoryItem>> getStacks(ItemStack input) {
         ItemStack copy = input.copy();
