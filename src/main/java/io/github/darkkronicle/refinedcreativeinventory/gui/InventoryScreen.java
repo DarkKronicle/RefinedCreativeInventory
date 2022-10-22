@@ -101,6 +101,12 @@ public class InventoryScreen extends ComponentScreen {
         boolean showInventory = CreativeInventoryConfig.getInstance().getInventorySplit().getValue();
         boolean showHotbar = CreativeInventoryConfig.getInstance().getHotbarSplit().getValue();
         int mainWidth = screen.getWidth() - 34;
+        int mainX = 24;
+
+        if (CreativeInventoryConfig.getInstance().getNarrowItems().getValue() && mainWidth > 500) {
+            mainWidth = mainWidth / 2;
+            mainX = (screen.getWidth() - mainWidth + 24) / 2;
+        }
         int itemsWidth = mainWidth;
 
         // Ugh this is jank. Basically want to set width to the maximum, but each one can be toggled...
@@ -137,7 +143,6 @@ public class InventoryScreen extends ComponentScreen {
             addComponent(new PositionedComponent(this, inventory, 24 + mainWidth - inventory.getWidth(), 40).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor()));
         }
 
-        int mainX = 24;
 
         tabs = new ListComponent(this, 22, -1, true);
         tabs.setTopPad(0);
@@ -147,9 +152,10 @@ public class InventoryScreen extends ComponentScreen {
 
         addComponent(new PositionedComponent(this,
                 new ScrollComponent(this, tabs, 22, screen.getHeight() - 100, true
-        ), 3, 40, -1, -1).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor()));
+        ), mainX - 23, 40, -1, -1).setOutlineColor(getComponentOutlineColor()).setBackgroundColor(getComponentBackgroundColor()));
 
         items = new ItemsComponent(this, new Dimensions(itemsWidth, screen.getHeight() - 100), itemsWidth);
+        items.setRightPad(4);
         items.setItems(lastSearch);
         addComponent(new PositionedComponent(this,
                 new ScrollComponent(this, items, itemsWidth, screen.getHeight() - 100, true

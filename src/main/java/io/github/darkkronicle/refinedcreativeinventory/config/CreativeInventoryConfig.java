@@ -30,8 +30,8 @@ public class CreativeInventoryConfig extends ModConfig {
     }
 
     @Getter private final BooleanOption overrideVanilla = new BooleanOption("overrideVanilla", "rci.option.overridevanilla", "rci.option.info.overridevanilla", true);
-    @Getter private final BooleanOption inventorySplit = new BooleanOption("inventorySplit", "rci.option.inventorysplit", "rci.option.info.inventorysplit", true);
-    @Getter private final BooleanOption hotbarSplit = new BooleanOption("hotbarSplit", "rci.option.hotbarsplit", "rci.option.info.hotbarsplit", true);
+    @Getter private final BooleanOption inventorySplit = new BooleanOption("inventorySplit", "rci.option.inventorysplit", "rci.option.info.inventorysplit", false);
+    @Getter private final BooleanOption hotbarSplit = new BooleanOption("hotbarSplit", "rci.option.hotbarsplit", "rci.option.info.hotbarsplit", false);
     @Getter private final BooleanOption persistentSearch = new BooleanOption("persistentSearch", "rci.option.persistentsearch", "rci.option.info.persistentsearch", true);
     @Getter private final HotkeySettingsOption switchHotbars = new HotkeySettingsOption("switchHotbars", "rci.option.switchhotbars", "rci.option.info.switchhotbars", new HotkeySettings(false, false, false, List.of(GLFW.GLFW_KEY_X), PlayerContextCheck.getDefault()));
     @Getter private final HotkeySettingsOption nextHotbar = new HotkeySettingsOption(
@@ -40,10 +40,12 @@ public class CreativeInventoryConfig extends ModConfig {
     @Getter private final HotkeySettingsOption previousHotbar = new HotkeySettingsOption(
             "previousHotbar", "rci.option.previoushotbar", "rci.option.info.previoushotbar",
             new HotkeySettings(false, false, false, List.of(GLFW.GLFW_KEY_DOWN), PlayerContextCheck.getDefault()));
+    @Getter private final BooleanOption narrowItems = new BooleanOption("narrowItems", "rci.option.narrowitems", "rci.option.info.narrowitems",
+            true);
     @Getter private final ColorOption mainBackgroundColor = new ColorOption("mainBackground", "rci.option.mainbackground", "rci.option.info.mainbackground",
-            new Color(0, 0, 0, 176));
+            new Color(0, 0, 0, 0));
     @Getter private final ColorOption componentBackgroundColor = new ColorOption("componentBackground", "rci.option.componentbackground", "rci.option.info.componentbackground",
-            new Color(40, 40, 40, 100));
+            new Color(90, 90, 90, 226));
     @Getter private final ColorOption componentOutlineColor = new ColorOption("componentOutline", "rci.option.componentoutline", "rci.option.info.componentoutline",
             new Color(255, 255, 255, 85));
     @Getter private final ColorOption slotOutlineColor = new ColorOption("slotOutline", "rci.option.slotoutline", "rci.option.info.mainbackground",
@@ -63,7 +65,7 @@ public class CreativeInventoryConfig extends ModConfig {
             )
     );
 
-    private final List<Option<?>> options = ImmutableList.of(overrideVanilla, openRefinedScreen, inventorySplit, hotbarSplit, persistentSearch, switchHotbars, nextHotbar, previousHotbar, mainBackgroundColor, componentBackgroundColor, componentOutlineColor, slotOutlineColor, openSelector);
+    private final List<Option<?>> options = ImmutableList.of(overrideVanilla, openRefinedScreen, narrowItems, inventorySplit, hotbarSplit, persistentSearch, switchHotbars, nextHotbar, previousHotbar, mainBackgroundColor, componentBackgroundColor, componentOutlineColor, slotOutlineColor, openSelector);
 
     @Override
     public File getFile() {
@@ -75,8 +77,4 @@ public class CreativeInventoryConfig extends ModConfig {
         return options;
     }
 
-    @Override
-    public void addOption(Option<?> option) {
-
-    }
 }

@@ -132,7 +132,6 @@ public class Radial extends MultiComponent {
             RenderUtil.drawRing(matrices, x + trueRadius, y + trueRadius, trueRadius, trueRadius - thickness, circleBackgroundColor.color());
         }
         int index = !isHovered() ? -1 : getNearestIndex(mouseX - x - trueRadius, mouseY - y - trueRadius);
-        MinecraftClient.getInstance().textRenderer.draw(matrices, String.valueOf(index), 10, 10, -1);
         if (index == -1) {
             super.renderComponent(matrices, renderBounds, x, y, mouseX, mouseY);
         } else {

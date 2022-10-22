@@ -50,7 +50,7 @@ public class ItemHolder {
         }
         getOrCreate(new ItemStack(Items.LIGHT)).addFlag(new ItemFlag("custom_light", 150));
         populateGroups();
-        Collections.sort(allItems);
+//        Collections.sort(allItems);
     }
 
     public void populateGroups() {

@@ -61,6 +61,7 @@ public class InventoryTab implements ItemTab {
     public static List<Component> getInventoryComponents(InventoryScreen screen, Dimensions bounds) {
         ListComponent rows = new ListComponent(screen, -1, -1, true);
         rows.setComponentYPad(0);
+        rows.setComponentXPad(0);
         rows.addComponent(new TextComponent(screen, StringUtil.translateToText("rci.inventory.inventory")));
         ListComponent other = new ListComponent(screen, -1, -1, false);
         other.addComponent(new ArmorInventoryComponent(screen, EquipmentSlot.HEAD, new Identifier("textures/" + PlayerScreenHandler.EMPTY_HELMET_SLOT_TEXTURE.getPath() + ".png"), 39).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
@@ -68,9 +69,15 @@ public class InventoryTab implements ItemTab {
         other.addComponent(new ArmorInventoryComponent(screen, EquipmentSlot.LEGS, new Identifier("textures/" + PlayerScreenHandler.EMPTY_LEGGINGS_SLOT_TEXTURE.getPath() + ".png"), 37).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
         other.addComponent(new ArmorInventoryComponent(screen, EquipmentSlot.FEET, new Identifier("textures/" + PlayerScreenHandler.EMPTY_BOOTS_SLOT_TEXTURE.getPath() + ".png"), 36).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
         other.addComponent(new IconInventoryComponent(screen, new Identifier("textures/" + PlayerScreenHandler.EMPTY_OFFHAND_ARMOR_SLOT.getPath() + ".png"), 40).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
+        other.setComponentYPad(0);
+        other.setComponentXPad(0);
         rows.addComponent(other);
         for (int row = 1; row <= 3; row++) {
             ListComponent columns = new ListComponent(screen, -1, -1, false);
+            columns.setComponentYPad(0);
+            columns.setComponentXPad(0);
+            columns.setTopPad(0);
+            columns.setBottomPad(0);
             for (int column = 0; column < 9; column++) {
                 columns.addComponent(new RefinedInventoryItemComponent(screen, row * 9 + column).setOutlineColor(InventoryScreen.getSlotOutlineColor()));
             }
@@ -109,6 +116,9 @@ public class InventoryTab implements ItemTab {
         icon.setRightPadding(0);
         icon.setTopPadding(0);
         icon.setBottomPadding(0);
+        rows.setTopPad(0);
+        rows.setComponentYPad(0);
+        rows.setBottomPad(0);
         rows.addComponent(icon);
         return List.of(rows);
     }
