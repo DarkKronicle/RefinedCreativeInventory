@@ -12,8 +12,11 @@ import io.github.darkkronicle.refinedcreativeinventory.gui.components.CustomInve
 import io.github.darkkronicle.refinedcreativeinventory.items.BasicInventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.InventoryItem;
 import io.github.darkkronicle.refinedcreativeinventory.items.ItemHolder;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -49,6 +52,26 @@ public class ItemSwitcherScreen extends ComponentScreen {
         Component base = createComponent(ItemHolder.getInstance().get(startingItem).orElseGet(() -> new BasicInventoryItem(startingItem)));
         Rectangle bounds = base.getBoundingBox();
         return new PositionedComponent(this, base, (width - bounds.width()) / 2, (height - bounds.height()) / 2);
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
+            // Exit out
+            forceClose();
+            return true;
+        }
+        InputUtil.Key key = InputUtil.fromKeyCode(keyCode, scanCode);
+        KeyBinding.setKeyPressed(key, true);
+        KeyBinding.onKeyPressed(key);
+        return true;
+    }
+
+    @Override
+    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+        InputUtil.Key key = InputUtil.fromKeyCode(keyCode, scanCode);
+        KeyBinding.setKeyPressed(key, false);
+        return false;
     }
 
     @Override

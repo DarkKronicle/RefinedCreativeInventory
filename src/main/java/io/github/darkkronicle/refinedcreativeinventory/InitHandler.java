@@ -13,6 +13,7 @@ import io.github.darkkronicle.refinedcreativeinventory.hotbars.SavedHotbar;
 import io.github.darkkronicle.refinedcreativeinventory.itemselector.InventoryItemSwitcherScreen;
 import io.github.darkkronicle.refinedcreativeinventory.itemselector.ItemSwitcherHandler;
 import io.github.darkkronicle.refinedcreativeinventory.itemselector.ItemSwitcherScreen;
+import io.github.darkkronicle.refinedcreativeinventory.util.ClientUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.world.GameMode;
 
@@ -79,16 +80,21 @@ public class InitHandler implements Initializer {
                 }
             }));
             hotkeys.add(new BasicHotkey(CreativeInventoryConfig.getInstance().getOpenSelector().getValue(), () -> {
+                ItemSwitcherScreen screen = ItemSwitcherHandler.getInstance().getCurrentScreen();
+                if (screen != null && !CreativeInventoryConfig.getInstance().getCloseOnRelease().getValue()) {
+                    screen.forceClose();
+                    return;
+                }
                 if (new PlayerContextCheck(true, null, GameMode.CREATIVE, null).check()) {
                     MinecraftClient client = MinecraftClient.getInstance();
                     int selectedSlot = client.player.getInventory().selectedSlot;
                     if (!client.player.getInventory().getStack(selectedSlot).isEmpty()) {
-                        client.setScreen(new InventoryItemSwitcherScreen(selectedSlot));
+                        ClientUtil.setScreenIgnoreKeybinds(new InventoryItemSwitcherScreen(selectedSlot));
                     }
                 }
             }, () -> {
                 ItemSwitcherScreen screen = ItemSwitcherHandler.getInstance().getCurrentScreen();
-                if (screen != null) {
+                if (screen != null && CreativeInventoryConfig.getInstance().getCloseOnRelease().getValue()) {
                     screen.forceClose();
                 }
             }));

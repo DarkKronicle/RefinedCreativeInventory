@@ -33,7 +33,11 @@ public class FlagOptionComponent extends TextOptionComponent<String, StringOptio
 
     @Override
     public void setValueFromString(String string) {
-        item.setFlags(new ArrayList<>(Arrays.stream(string.split(",")).map(ItemFlag::fromString).toList()));
+        if (string == null || string.length() == 0) {
+            item.setFlags(new ArrayList<>());
+        } else {
+            item.setFlags(new ArrayList<>(Arrays.stream(string.split(",")).map(ItemFlag::fromString).toList()));
+        }
     }
 
     @Override

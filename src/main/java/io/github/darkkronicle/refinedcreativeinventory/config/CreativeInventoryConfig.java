@@ -29,7 +29,7 @@ public class CreativeInventoryConfig extends ModConfig {
         return new File(FileUtil.getConfigDirectory(), "refinedCreativeInventory");
     }
 
-    @Getter private final BooleanOption overrideVanilla = new BooleanOption("overrideVanilla", "rci.option.overridevanilla", "rci.option.info.overridevanilla", true);
+    @Getter private final BooleanOption overrideVanilla = new BooleanOption("overrideVanilla", "rci.option.overridevanilla", "rci.option.info.overridevanilla", false);
     @Getter private final BooleanOption inventorySplit = new BooleanOption("inventorySplit", "rci.option.inventorysplit", "rci.option.info.inventorysplit", false);
     @Getter private final BooleanOption hotbarSplit = new BooleanOption("hotbarSplit", "rci.option.hotbarsplit", "rci.option.info.hotbarsplit", false);
     @Getter private final BooleanOption persistentSearch = new BooleanOption("persistentSearch", "rci.option.persistentsearch", "rci.option.info.persistentsearch", true);
@@ -41,9 +41,9 @@ public class CreativeInventoryConfig extends ModConfig {
             "previousHotbar", "rci.option.previoushotbar", "rci.option.info.previoushotbar",
             new HotkeySettings(false, false, false, List.of(GLFW.GLFW_KEY_DOWN), PlayerContextCheck.getDefault()));
     @Getter private final BooleanOption narrowItems = new BooleanOption("narrowItems", "rci.option.narrowitems", "rci.option.info.narrowitems",
-            true);
+            false);
     @Getter private final ColorOption mainBackgroundColor = new ColorOption("mainBackground", "rci.option.mainbackground", "rci.option.info.mainbackground",
-            new Color(0, 0, 0, 0));
+            new Color(40, 40, 40, 100));
     @Getter private final ColorOption componentBackgroundColor = new ColorOption("componentBackground", "rci.option.componentbackground", "rci.option.info.componentbackground",
             new Color(90, 90, 90, 226));
     @Getter private final ColorOption componentOutlineColor = new ColorOption("componentOutline", "rci.option.componentoutline", "rci.option.info.componentoutline",
@@ -57,6 +57,9 @@ public class CreativeInventoryConfig extends ModConfig {
                     false, false, true, List.of(InputUtil.MOUSE_MIDDLE), PlayerContextCheck.getDefault()
             )
     );
+
+    @Getter
+    private final BooleanOption closeOnRelease = new BooleanOption("closeOnRelease", "rci.option.closeonrelease", "rci.option.info.closeonrelease", true);
 
     @Getter private final HotkeySettingsOption openRefinedScreen = new HotkeySettingsOption(
             "openRefinedScreen", "rci.option.openrefinedscreen", "rci.option.info.openrefinedscreen",
